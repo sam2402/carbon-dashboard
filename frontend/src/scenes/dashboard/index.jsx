@@ -113,7 +113,7 @@ const Dashboard = () => {
         >
           <StatBox
             title="1,325,134"
-            subtitle="Traffic Received"
+            subtitle="Total Increase"
             progress="0.80"
             increase="+43%"
             icon={
