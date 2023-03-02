@@ -72,7 +72,7 @@ const RealTime = () => {
           >
             Geography Based Traffic
           </Typography>
-          <Box height="35vh">
+          <Box height="35vh" width ="70vh">
             <GeographyChart  />
           </Box>
         </Box>

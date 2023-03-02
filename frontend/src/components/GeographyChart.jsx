@@ -44,7 +44,7 @@ const GeographyChart = ({ isDashboard = false }) => {
       unknownColor="#666666"
       label="properties.name"
       valueFormat=".2s"
-      projectionScale={isDashboard ? 40 : 150}
+      projectionScale={isDashboard ? 40 : 70}
       projectionTranslation={isDashboard ? [0.49, 0.6] : [0.5, 0.5]}
       projectionRotation={[0, 0, 0]}
       borderWidth={1.5}
@@ -53,11 +53,11 @@ const GeographyChart = ({ isDashboard = false }) => {
         !isDashboard
           ? [
               {
-                anchor: "bottom-left",
+                anchor: "left",
                 direction: "column",
                 justify: true,
                 translateX: 20,
-                translateY: -100,
+                translateY: 0,
                 itemsSpacing: 0,
                 itemWidth: 94,
                 itemHeight: 18,
