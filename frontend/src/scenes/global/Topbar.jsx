@@ -12,16 +12,33 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext);
 
   return (
-    <Box position="absolute" right="0px"  p={2}>
-      {/* ICONS */}
-      <IconButton onClick={colorMode.toggleColorMode}>
-        {theme.palette.mode === "dark" ? (
-          <DarkModeOutlinedIcon />
-        ) : (
-          <LightModeOutlinedIcon />
-        )}
+    <Box display="flex" justifyContent="space-between">
+      <Box position="absolute" right="0px"  p={2}>
+        {/* ICONS */}
+        <IconButton onClick={colorMode.toggleColorMode}>
+          {theme.palette.mode === "dark" ? (
+            <DarkModeOutlinedIcon />
+          ) : (
+            <LightModeOutlinedIcon />
+          )}
+        </IconButton>
+      </Box>
+
+      {/* SEARCH BAR */}
+      <Box
+      backgroundColor={colors.primary[400]}
+      borderRadius="3px"
+      position="absolute"
+      left="60%"
+      top="20px"
+      >
+    
+      <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Enter Region" />
+      <IconButton type="button" sx={{ p: 2}}>
+        <SearchIcon />
       </IconButton>
     </Box>
+  </Box>
   );
 };
 
