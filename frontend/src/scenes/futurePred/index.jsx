@@ -1,10 +1,10 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import LineChartFuturePred from "../../components/LineChart/LineChartFuturePred";
-import GeographyChart from "../../components/GeographyChart";
 import Header from "../../components/Header";
-import BarChart from "../../components/BarChart";
-import PieChart from "../../components/PieChart";
+import GeographyChartFuturePred from "../../components/GeographyChart/GeographyChartFuturePred";
+import BarChartFuturePred from "../../components/BarChart/BarChartFuturePred";
+import PieChartFuturePred from "../../components/PieChart/PieChartFuturePred";
 
 const FuturePred = () => {
   const theme = useTheme();
@@ -72,7 +72,7 @@ const FuturePred = () => {
             Geography Based Traffic
           </Typography>
           <Box height="35vh" width ="70vh">
-            <GeographyChart  />
+            <GeographyChartFuturePred  />
           </Box>
         </Box>
 
@@ -89,10 +89,10 @@ const FuturePred = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Emissions type per continent
+            Emissions type per Region
           </Typography>
           <Box height="40vh" mt="-20px">
-            <BarChart />
+            <BarChartFuturePred />
           </Box>
         </Box>
 
@@ -111,7 +111,7 @@ const FuturePred = () => {
             Scopes of Emissions
           </Typography>
           <Box height="35vh" >
-            <PieChart  />
+            <PieChartFuturePred  />
           </Box>
         </Box>
       </Box>

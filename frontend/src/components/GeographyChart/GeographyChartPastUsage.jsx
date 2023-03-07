@@ -1,10 +1,10 @@
 import { useTheme } from "@mui/material";
 import { ResponsiveChoropleth } from "@nivo/geo";
-import { geoFeatures } from "../data/mockGeoFeatures";
-import { tokens } from "../theme";
-import { mockGeographyData as data } from "../data/mockData";
+import { geoFeatures } from "../../data/mockGeoFeatures";
+import { tokens } from "../../theme";
+import { mockGeographyData as data } from "../../data/mockDataPast";
 
-const GeographyChart = ({ isDashboard = false }) => {
+const GeographyChartPastUsage = ({ isDashboard = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -49,6 +49,8 @@ const GeographyChart = ({ isDashboard = false }) => {
       projectionRotation={[0, 0, 0]}
       borderWidth={1.5}
       borderColor="#ffffff"
+      isInteractive={true}
+      tooltip={function(e){}}
       legends={
         !isDashboard
           ? [
@@ -82,4 +84,4 @@ const GeographyChart = ({ isDashboard = false }) => {
   );
 };
 
-export default GeographyChart;
+export default GeographyChartPastUsage;

@@ -1,7 +1,7 @@
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { RealTimeLinedata as data } from "../../data/mockData";
+import { mockLineData as data } from "../../data/mockDataPresent";
 
 const LineChartRealTime = ({ isCustomLineColors = false, isDashboard = false }) => {
   const theme = useTheme();

@@ -1,9 +1,9 @@
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
-import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
+import { tokens } from "../../theme";
+import { mockBarData as data } from "../../data/mockDataFuture";
 
-const BarChart = ({ isDashboard = false }) => {
+const BarChartFuturePred = ({ isDashboard = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -76,7 +76,7 @@ const BarChart = ({ isDashboard = false }) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "continent", // changed
+        legend: isDashboard ? undefined : "region", // changed
         legendPosition: "middle",
         legendOffset: 40,
       }}
@@ -127,4 +127,4 @@ const BarChart = ({ isDashboard = false }) => {
   );
 };
 
-export default BarChart;
+export default BarChartFuturePred;

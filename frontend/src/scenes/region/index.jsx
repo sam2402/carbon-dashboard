@@ -17,7 +17,7 @@ const Region = () => {
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
-            Data Centres
+            Energy Type
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -30,7 +30,7 @@ const Region = () => {
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
-            Servers
+            Server Usage Rate
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -43,7 +43,7 @@ const Region = () => {
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
-            Employee Management
+            Server Work Time Per day
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -56,7 +56,7 @@ const Region = () => {
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
-            PC Devices
+            Sever Configuration
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -69,7 +69,20 @@ const Region = () => {
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
-            The Final Question
+            Location
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+            malesuada lacus ex, sit amet blandit leo lobortis eget.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion defaultExpanded>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography color={colors.greenAccent[500]} variant="h5">
+            Cooling Type
           </Typography>
         </AccordionSummary>
         <AccordionDetails>

@@ -1,10 +1,10 @@
 import { Box, Typography, useTheme} from "@mui/material";
 import { tokens } from "../../theme";
 import LineChartPastUsage from "../../components/LineChart/LineChartPastUsage";
-import GeographyChart from "../../components/GeographyChart";
 import Header from "../../components/Header";
-import BarChart from "../../components/BarChart";
-import PieChart from "../../components/PieChart";
+import GeographyChartPastUsage from "../../components/GeographyChart/GeographyChartPastUsage";
+import PieChartPastUsage from "../../components/PieChart/PieChartPastUsage";
+import BarChartPastUsage from "../../components/BarChart/BarChartPastUsage";
 
 const PastUsage = () => {
   const theme = useTheme();
@@ -72,7 +72,7 @@ const PastUsage = () => {
             Geography Based Traffic
           </Typography>
           <Box height="35vh" width ="70vh" >
-            <GeographyChart  />
+            <GeographyChartPastUsage  />
           </Box>
         </Box>
 
@@ -89,10 +89,10 @@ const PastUsage = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Emissions type per continent
+            Emissions type per Region
           </Typography>
           <Box height="40vh" mt="-20px">
-            <BarChart />
+            <BarChartPastUsage />
           </Box>
         </Box>
 
@@ -111,7 +111,7 @@ const PastUsage = () => {
             Scopes of Emissions
           </Typography>
           <Box height="35vh" >
-            <PieChart  />
+            <PieChartPastUsage  />
           </Box>
         </Box>
       </Box>

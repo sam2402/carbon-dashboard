@@ -1,11 +1,13 @@
 
 import { tokens } from "../../theme";
 import { Box, Typography, useTheme} from "@mui/material";
-import LineChartRealTime from "../../components/LineChart/LineChartRealTime";
-import GeographyChart from "../../components/GeographyChart";
 import Header from "../../components/Header";
-import BarChart from "../../components/BarChart";
-import PieChart from "../../components/PieChart";
+
+import LineChartRealTime from "../../components/LineChart/LineChartRealTime";
+import GeographyChartRealTime from "../../components/GeographyChart/GeographyChartRealTime";
+import BarChartRealTime from "../../components/BarChart/BarChartRealTime";
+import PieChartRealTime from "../../components/PieChart/PieChartRealTime";
+
 
 const RealTime = () => {
   const theme = useTheme();
@@ -73,7 +75,7 @@ const RealTime = () => {
             Geography Based Traffic
           </Typography>
           <Box height="35vh" width ="70vh">
-            <GeographyChart  />
+            <GeographyChartRealTime  />
           </Box>
         </Box>
 
@@ -90,10 +92,10 @@ const RealTime = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Emissions type per continent
+            Emissions type per Region
           </Typography>
           <Box height="40vh" mt="-20px">
-            <BarChart />
+            <BarChartRealTime />
           </Box>
         </Box>
 
@@ -112,7 +114,7 @@ const RealTime = () => {
             Scopes of Emissions
           </Typography>
           <Box height="35vh" >
-            <PieChart  />
+            <PieChartRealTime  />
           </Box>
         </Box>
       </Box>
