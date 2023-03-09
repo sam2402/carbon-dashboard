@@ -1,0 +1,2 @@
+[{"date": "2023-03-28", "value": 1000000000,"energy type":"Wind","server usage":20,"server work time":22,"cooling type":"Indirect evaporative cooling system (wet cooling)","server configuration":"Intel Xeon E5-2697 v2", "location":"south of Madrid"},
+{"date": "2023-03-28", "value": 1000000000,"energy type":"Coal","server usage":20,"server work time":22,"cooling type":"Indirect evaporative cooling system (wet cooling)","server configuration":"Intel Xeon E5-2697 v2", "location":"south of Madrid"}]
