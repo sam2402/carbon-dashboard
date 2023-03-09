@@ -2,7 +2,6 @@ import { Box, Typography, useTheme} from "@mui/material";
 import { tokens } from "../../theme";
 import LineChartPastUsage from "../../components/LineChart/LineChartPastUsage";
 import Header from "../../components/Header";
-import GeographyChartPastUsage from "../../components/GeographyChart/GeographyChartPastUsage";
 import PieChartPastUsage from "../../components/PieChart/PieChartPastUsage";
 import BarChartPastUsage from "../../components/BarChart/BarChartPastUsage";
 
