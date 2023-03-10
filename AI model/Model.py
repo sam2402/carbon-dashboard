@@ -6,7 +6,7 @@ from datetime import timedelta
 import numpy as np
 
 # Read the JSON file
-with open("monthly_sine_carbon_emissions.json", "r") as f:
+with open("carbon_emissions.json", "r") as f:
     data = json.load(f)
 
 # Convert the JSON data to a DataFrame
@@ -44,13 +44,6 @@ plt.hist(residuals)
 plt.title("Residuals Histogram")
 plt.show()
 
-# Generate the residuals autocorrelation plot
-from statsmodels.graphics.tsaplots import plot_acf
-
-plot_acf(residuals)
-plt.title("Residuals ACF")
-plt.show()
-
 # Predict the future 3 months data
 predictions = model_fit.forecast(steps=90)
 
@@ -62,7 +55,7 @@ for i in range(90):
     pred_df = pred_df.append({'date': date.strftime("%Y-%m-%d"), 'value': predictions[i]}, ignore_index=True)
 
 # Write the prediction result to the JSON file
-with open("predicted_monthly_sine_carbon_emissions.json", "w") as f:
+with open("predicted_carbon_emissions.json", "w") as f:
     json.dump(pred_df.to_dict(orient='records'), f)
 
 # Calculate the RMSE
