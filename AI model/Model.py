@@ -1,64 +1,83 @@
-import json
 import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-from datetime import timedelta
-import numpy as np
+from datetime import datetime
 
-# Read the JSON file
-with open("carbon_emissions.json", "r") as f:
-    data = json.load(f)
+def calculate_step(past_data, future_date):
+    # Convert the 'date' column to datetime format
+    past_data_dates = [datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S') for data in past_data]
 
-# Convert the JSON data to a DataFrame
-df = pd.DataFrame(data)
+    # Get the time difference between the last two dates
+    time_delta = past_data_dates[-1] - past_data_dates[-2]
 
-# Check if the data columns are only 'date' and 'value', if not, select only these two columns
-if set(['date', 'value']) != set(df.columns):
-    df = df[['date', 'value']]
+    # Convert the future date string to datetime format
+    future_date = datetime.strptime(future_date, '%Y-%m-%d %H:%M:%S')
 
-# Convert the 'date' column to date format and set it as the index
-df['date'] = pd.to_datetime(df['date'])
-df = df.set_index('date')
+    # Calculate the step
+    step = int((future_date - past_data_dates[-1]).total_seconds() / time_delta.total_seconds())
 
-# Handle missing values, if encountering a blank data, use the data of the previous day to cover it
-df.fillna(method='ffill', inplace=True)
+    return step
+    
+def get_future_emissons(past_emissions, future_date):
+    # Convert the data to a DataFrame
+    df = pd.DataFrame(past_emissions)
 
-# Split the dataset into training and test sets
-train_data = df[-90:]
-test_data = df[:-90]
+    # Convert the 'date' column to date format and set it as the index
+    df['date'] = pd.to_datetime(df['date'])
+    df = df.set_index('date')
+    
+    # Split the dataset into training and test sets
+    train_data = df[-90:]
+    test_data = df[:-90]
+    
+    #use BIC to calculate the p and q value
+    from BIC import get_p_and_q_value
+    a, b = get_p_and_q_value(past_emissions)
+    print(a,b)
+    
+    #initial the order for SARIMA
+    p = a
+    d = 1
+    q = b
+    P = 1
+    D = 1
+    Q = 1
+    m = 12
+    
+    # Fit the SARIMA model
+    model = SARIMAX(train_data, order=(p, d, q), seasonal_order=(P, D, Q, m))
+    
+    # Train the SARIMA model
+    model_fit = model.fit()
+    
+    # Print the model summary information
+    print(model_fit.summary())
 
-# Fit the SARIMA model
-model = SARIMAX(train_data, order=(2, 1, 2), seasonal_order=(1, 1, 1, 12))
+    # Generate the model residuals
+    residuals = model_fit.resid
 
-# Train the SARIMA model
-model_fit = model.fit()
+    # Plot the histogram of residuals, check the accuracy by histogram of residuals
+    plt.hist(residuals)
+    plt.title("Residuals Histogram")
+    plt.show()
 
-# Print the model summary information
-print(model_fit.summary())
+    # Get the number of steps to predict
+    step = calculate_step(past_emissions, future_date)
 
-# Generate the model residuals
-residuals = model_fit.resid
+    # Predict the future data
+    predictions = model_fit.forecast(steps=step)
+    predict_time = predictions.index
+    
+    # Create the prediction result list
+    pred_list_dic = []
+    for i in range(step):
+        date_str = predict_time[i].strftime('%Y-%m-%d %H:%M:%S')
+        pred_list_dic.append({'date': date_str, 'value': predictions[i]})
+    
+    return pred_list_dic
+      
+# Read the data from list_dic.py
+from list_dic import list
+x_list = list
 
-# Plot the histogram of residuals
-plt.hist(residuals)
-plt.title("Residuals Histogram")
-plt.show()
-
-# Predict the future 3 months data
-predictions = model_fit.forecast(steps=90)
-
-# Create the prediction result DataFrame
-pred_df = pd.DataFrame({'date': [], 'value': []})
-date = df.index[-1]
-for i in range(90):
-    date += timedelta(days=1)
-    pred_df = pred_df.append({'date': date.strftime("%Y-%m-%d"), 'value': predictions[i]}, ignore_index=True)
-
-# Write the prediction result to the JSON file
-with open("predicted_carbon_emissions.json", "w") as f:
-    json.dump(pred_df.to_dict(orient='records'), f)
-
-# Calculate the RMSE
-predictions_df = pd.DataFrame(predictions, columns=['value'], index=test_data.index)
-rmse = np.sqrt(np.mean((predictions_df['value'] - test_data['value'])**2))
-print("RMSE: ", rmse)
+y = get_future_emissons(x_list, '2023-09-22 00:00:00')
