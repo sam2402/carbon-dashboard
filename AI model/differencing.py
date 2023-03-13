@@ -19,19 +19,20 @@ def calculate_stationarity(data):
         return False
 
 def difference(data, interval=1):
-    return [data[i] - data[i - interval] for i in range(interval, len(data))]
+    return [data[i] - data[i - interval] for i in range(interval, len(data))] + [data[-1]]
 
 def main():
     with open("UKI_DAI_DataEngineering_Discovery.json") as file:
         data = json.load(file)
         
-    df = pd.DataFrame(data)
-    df.set_index("date", inplace=True)
+    df = pd.DataFrame({"value": [row["value"] for row in data]})
+    df.index = pd.to_datetime([row["date"] for row in data])
     
     i = 0
     while not calculate_stationarity(df["value"]):
         i += 1
-        df["value"] = difference(df["value"], interval=i)
+        df = pd.DataFrame({"value": difference(df["value"], interval=i)})
+        df.index = pd.to_datetime(df.index)
         
     print("The number of differences required for stationarity is {}".format(i))
 
