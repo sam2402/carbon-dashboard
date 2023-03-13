@@ -2,7 +2,7 @@ import datetime
 import types
 import json
 
-from flask import Flask, g, request
+from flask import Flask, request
 from flask_api import status
 
 import backend.carbon.azure_api as azure_api
@@ -29,31 +29,34 @@ def get_resources(resourceGroup):
     }
     
 @app.route("/past-resource-emissions/<resourceGroup>")
-@app.route("/past-resource-emissions/<resourceGroup>/<resourceId>")
+@app.route("/past-resource-emissions/<resourceGroup>/<path:resourceId>")
 def get_past_resource_emissions(resourceGroup: str, resourceId: str=None):
     date_param = request.args.get("earliestDate")
-    earliest_date = datetime.datetime.strptime(date_param, '%Y-%m-%d').date() if date_param else None
+    earliest_date = datetime.datetime.strptime(date_param, "%Y-%m-%d %H:%M:%S").date() if date_param else None
     interval = request.args.get("interval")
-    if resourceId:
-        emissions = azure_client.get_emissions_for_resource(resourceGroup, resourceId, earliest_date, interval)
-    emissions = azure_client.get_emissions_for_resource_group(resourceGroup, earliest_date, interval)
+    if resourceId is not None:
+        emissions = azure_client.get_emissions_for_resource(resourceGroup, "/"+resourceId, earliest_date, interval)
+    else:
+        emissions = azure_client.get_emissions_for_resource_group(resourceGroup, earliest_date, interval)
+
     return {
         "value": [
             {
-                "date": emission["date"].strftime('%Y-%m-%d'),
+                "date": emission["date"].strftime("%Y-%m-%d %H:%M:%S"),
                 "value": emission["value"],
             }
         for emission in emissions]
     }
 
 @app.route("/past-total-emissions/<resourceGroup>")
-@app.route("/past-total-emissions/<resourceGroup>/<resourceId>")
+@app.route("/past-total-emissions/<resourceGroup>/<path:resourceId>")
 def get_past_total_emissions(resourceGroup: str, resourceId: str=None):
     date_param = request.args.get("earliestDate")
-    earliest_date = datetime.datetime.strptime(date_param, '%Y-%m-%d').date() if date_param else None
-    if resourceId:
-        emissions = azure_client.get_emissions_for_resource(resourceGroup, resourceId, earliest_date)
-    emissions = azure_client.get_emissions_for_resource_group(resourceGroup, earliest_date)
+    earliest_date = datetime.datetime.strptime(date_param, "%Y-%m-%d %H:%M:%S").date() if date_param else None
+    if resourceId is not None:
+        emissions = azure_client.get_emissions_for_resource(resourceGroup, "/"+resourceId, earliest_date)
+    else:
+        emissions = azure_client.get_emissions_for_resource_group(resourceGroup, earliest_date)
 
     return {
         "value": sum(emission["value"] for emission in emissions)

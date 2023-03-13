@@ -63,13 +63,11 @@ class AzureClient:
                                    ) -> list[dict[datetime.datetime, float]]:
         
         if earliest_date is None:
-            earliest_date = datetime.datetime.now().date()-datetime.timedelta(days=365)
+            earliest_date = datetime.datetime.now().date()-datetime.timedelta(days=700)
         if interval is None:
             interval = "P1D"
 
         resource = self._get_resource(resource_group, resource_id)
-
-        usage_to_carbon_production_coefficient = get_carbon_coefficient(resource)
 
         try:
             metric = resource_metric[resource.type]
@@ -91,7 +89,7 @@ class AzureClient:
             for ts_element in item.timeseries:
                 for data in ts_element.data:
                     computer_value_proxy = data.total if data.total is not None else 0
-                    carbon_emissions = computer_value_proxy * usage_to_carbon_production_coefficient
+                    carbon_emissions = computer_value_proxy * get_carbon_coefficient(resource, data.time_stamp)
                     data_points.append({
                         "date": data.time_stamp,
                         "value": carbon_emissions
