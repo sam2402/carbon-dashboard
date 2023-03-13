@@ -1,33 +1,39 @@
 import json
 import pandas as pd
+from statsmodels.tsa.stattools import adfuller
 
-# Read data from JSON file
-with open('carbon_emissions.json', 'r') as f:
-    data = json.load(f)
+def calculate_stationarity(data):
+    # Perform Dickey-Fuller test
+    result = adfuller(data)
+    print('ADF Statistic: {}'.format(result[0]))
+    print('p-value: {}'.format(result[1]))
+    print('Critical Values:')
+    for key, value in result[4].items():
+        print('\t{}: {}'.format(key, value))
+        
+    if result[1] <= 0.05:
+        print("The data is stationary")
+        return True
+    else:
+        print("The data is not stationary")
+        return False
 
-# Convert data to DataFrame
-df = pd.DataFrame(data)
+def difference(data, interval=1):
+    return [data[i] - data[i - interval] for i in range(interval, len(data))]
 
-# Convert date column to datetime
-df['date'] = pd.to_datetime(df['date'])
+def main():
+    with open("UKI_DAI_DataEngineering_Discovery.json") as file:
+        data = json.load(file)
+        
+    df = pd.DataFrame(data)
+    df.set_index("date", inplace=True)
+    
+    i = 0
+    while not calculate_stationarity(df["value"]):
+        i += 1
+        df["value"] = difference(df["value"], interval=i)
+        
+    print("The number of differences required for stationarity is {}".format(i))
 
-# Set date column as index
-df.set_index('date', inplace=True)
-
-# Calculate difference between consecutive values
-df_diff = df.diff()
-
-# Drop first row since it will be NaN
-df_diff.dropna(inplace=True)
-
-# Convert DataFrame to list of dictionaries with str type dates
-diff_data = df_diff.reset_index().to_dict('records')
-for d in diff_data:
-    d['date'] = str(d['date'])
-
-# Save diff data to JSON file
-with open('diff_data.json', 'w') as f:
-    json.dump(diff_data, f)
-
-# Plot diff data
-df_diff.plot()
+if __name__ == '__main__':
+    main()
