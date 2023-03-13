@@ -43,7 +43,7 @@ class ResourceGroupCache:
     def resources(self) -> list[GenericResourceExpanded]:
         return list(self._resources.values())
     
-    def get_resource(self, resource_id) -> GenericResourceExpanded:
+    def get_resource(self, resource_id: str) -> GenericResourceExpanded:
         if resource_id not in self._resources:
             raise KeyError(f"No such resource with id {resource_id}")
         
@@ -71,6 +71,6 @@ def resource_to_dict(resource: GenericResourceExpanded):
             "principal_id": resource.identity.principal_id,
             "tenant_id": resource.identity.tenant_id,
         } if resource.identity else None,
-        "created_time": resource.created_time.strftime('%d/%m/%Y') if resource.created_time else None,
-        "changed_time": resource.changed_time.strftime('%d/%m/%Y') if resource.changed_time else None,
+        "created_time": resource.created_time.strftime("%Y-%m-%d %H:%M:%S") if resource.created_time else None,
+        "changed_time": resource.changed_time.strftime("%Y-%m-%d %H:%M:%S") if resource.changed_time else None,
     }
