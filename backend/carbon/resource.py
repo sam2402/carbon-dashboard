@@ -3,7 +3,7 @@ from typing import Callable
 
 from azure.mgmt.resource.resources.models import GenericResourceExpanded
 
-from .metrics_util import resource_metric
+from .sources.objs import resource_metrics
 
 class ResourceCache:
 
@@ -24,7 +24,7 @@ class ResourceCache:
         if resource_group not in self._resource_groups or self._resource_groups[resource_group].time_since_update > self._refresh_time:
             resources_response = self._fetch_resources(resource_group)
             self._resource_groups[resource_group] = ResourceGroupCache(
-                list(filter(lambda resource: resource.type in resource_metric, resources_response))
+                list(filter(lambda resource: resource.type in resource_metrics, resources_response))
             )
 
 class ResourceGroupCache:
