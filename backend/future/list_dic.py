@@ -1,7 +1,7 @@
 import json
 
 # Read the JSON file
-with open("sine_carbon_emissions.json", "r") as f:
+with open("UKI_DAI_DataEngineering_Discovery.json", "r") as f:
     data = json.load(f)
 
 # Store the data in a list of dictionaries

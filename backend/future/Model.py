@@ -27,22 +27,21 @@ def get_future_emissons(past_emissions, future_date):
     df = df.set_index('date')
     
     # Split the dataset into training and test sets
-    train_data = df[-90:]
-    test_data = df[:-90]
+    train_data = df[-360:]
+    test_data = df[:-360]
     
     #use BIC to calculate the p and q value
     from BIC import get_p_and_q_value
     a, b = get_p_and_q_value(past_emissions)
-    print(a,b)
     
     # set the order for SARIMA
     p = a
-    d = 1
+    d = 0
     q = b
-    P = 1
-    D = 1
-    Q = 1
-    m = 12
+    P = 0
+    D = 0
+    Q = 0
+    m = 0
     
     # Fit the SARIMA model
     model = SARIMAX(train_data, order=(p, d, q), seasonal_order=(P, D, Q, m))
@@ -73,7 +72,7 @@ def get_future_emissons(past_emissions, future_date):
     for i in range(step):
         date_str = predict_time[i].strftime('%Y-%m-%d %H:%M:%S')
         pred_list_dic.append({'date': date_str, 'value': predictions[i]})
-    
+
     return pred_list_dic
       
 # Read the data from list_dic.py

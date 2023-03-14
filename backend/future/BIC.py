@@ -28,7 +28,7 @@ def get_p_and_q_value (past_emissions):
     for p in range(max_p):
         for q in range(max_q):
             try:
-                model = ARIMA(df, order=(p, 1, q))
+                model = ARIMA(df, order=(p, 0, q))
                 results = model.fit()
                 BIC[p, q] = results.bic
             except:
