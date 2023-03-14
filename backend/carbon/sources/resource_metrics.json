@@ -1,15 +1,15 @@
-resource_metric = {
+{
     "Microsoft.Sql/servers/databases": {
         "name": "cpu_percent",
-        "aggregation": "Average",
+        "aggregation": "Average"
     },
     "Microsoft.Web/serverFarms": {
         "name": "CpuPercentage",
-        "aggregation": "Average",
+        "aggregation": "Average"
     },
     "Microsoft.Maps/accounts": {
         "name": "Usage",
-        "aggregation": "Count",
+        "aggregation": "Count"
     },
     "Microsoft.Storage/storageAccounts": {
         "name":  "Transactions",
@@ -17,10 +17,10 @@ resource_metric = {
     },
     "Microsoft.Web/sites": {
         "name": "CpuTime",
-        "aggregation": "Average",
+        "aggregation": "Average"
     },
     "Microsoft.Web/staticSites": {
         "name": "SiteHits",
-        "aggregation": "Total",
+        "aggregation": "Total"
     }
 }

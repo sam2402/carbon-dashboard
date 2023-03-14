@@ -79,10 +79,4 @@ def get_future_emissons(past_emissions, future_date):
 from list_dic import list
 x_list = list
 
-y = get_future_emissons(x_list, '2023-03-18 00:00:00')
-
-'''
-import json
-with open('data.json', 'w') as outfile:
-    json.dump(y, outfile)
-'''
+y = get_future_emissons(x_list, '2023-06-09 00:00:00')

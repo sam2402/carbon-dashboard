@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from .metrics_util import resource_metric
+from .sources.objs import resource_metrics, cpus
 from .emissions import get_carbon_coefficient
 from .resource import ResourceCache
 
@@ -13,6 +13,7 @@ from azure.mgmt.monitor import MonitorManagementClient
 ONE_HOUR = 60*60
 
 class AzureClient:
+
     def __init__(self):
 
         credential = DefaultAzureCredential()
@@ -70,7 +71,7 @@ class AzureClient:
         resource = self._get_resource(resource_group, resource_id)
 
         try:
-            metric = resource_metric[resource.type]
+            metric = resource_metrics[resource.type]
         except KeyError:
             raise Exception(f"Resource type: {resource.type} not supported")
 
@@ -89,7 +90,7 @@ class AzureClient:
             for ts_element in item.timeseries:
                 for data in ts_element.data:
                     computer_value_proxy = data.total if data.total is not None else 0
-                    carbon_emissions = computer_value_proxy * get_carbon_coefficient(resource, data.time_stamp)
+                    carbon_emissions = computer_value_proxy * get_carbon_coefficient(resource, data.time_stamp, interval)
                     data_points.append({
                         "date": data.time_stamp,
                         "value": carbon_emissions

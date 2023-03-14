@@ -1,0 +1,14 @@
+{
+    "westeurope": {
+        "longitude": "4.897070",
+        "latitude": "52.377956"
+    },
+    "uksouth": {
+        "longitude": "-0.118092",
+        "latitude": "51.509865"
+    },
+    "eastus": {
+        "longitude": "-78.024902",
+        "latitude": "37.926868"
+    }
+}
