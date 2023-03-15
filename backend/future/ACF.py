@@ -19,5 +19,8 @@ df.set_index('date', inplace=True)
 # Calculate autocorrelation
 acf = sm.graphics.tsa.plot_acf(df['value'], lags=30)
 
+# Add y-axis label
+plt.ylabel("Autocorrelation")
+
 # Show plot
 plt.show()

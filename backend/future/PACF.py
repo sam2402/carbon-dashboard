@@ -19,5 +19,8 @@ df.set_index('date', inplace=True)
 # Calculate partial autocorrelation
 pacf = sm.graphics.tsa.plot_pacf(df['value'], lags=30)
 
+# Add y-axis label
+plt.ylabel("Partial Autocorrelation")
+
 # Show plot
 plt.show()

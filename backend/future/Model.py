@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from datetime import datetime
+from statsmodels.graphics.gofplots import qqplot 
 
 def calculate_step(past_data, future_date):
     # Convert the 'date' column to datetime format
@@ -58,6 +59,14 @@ def get_future_emissons(past_emissions, future_date):
     # Plot the histogram of residuals, check the accuracy by histogram of residuals
     plt.hist(residuals)
     plt.title("Residuals Histogram")
+    plt.xlabel("Residual Value")
+    plt.ylabel("Frequency")  # add y-axis
+    plt.show()
+    
+    # Plot the QQ plot of residuals  
+    # Using the 's' parameter to draw a reference line means drawing a line with a slope of 1 and an intercept of 0
+    qqplot(residuals, line='s')
+    plt.title("Residuals QQ Plot")
     plt.show()
 
     # Get the number of steps to predict
@@ -79,4 +88,4 @@ def get_future_emissons(past_emissions, future_date):
 from list_dic import list
 x_list = list
 
-y = get_future_emissons(x_list, '2023-06-09 00:00:00')
+y = get_future_emissons(x_list, '2023-03-15 00:00:00')
