@@ -28,7 +28,7 @@ def get_future_emissons(past_emissions, future_date):
     
     # Split the dataset into training and test sets
     train_data = df[-360:]
-    test_data = df[:-360]
+    validation_data = df[:-360]
     
     #use BIC to calculate the p and q value
     from BIC import get_p_and_q_value
