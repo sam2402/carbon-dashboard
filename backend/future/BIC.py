@@ -4,7 +4,7 @@ from statsmodels.tsa.arima.model import ARIMA
 import matplotlib.pyplot as plt
 import numpy as np
 
-def get_p_and_q_value (past_emissions):
+def get_p_and_q_value (past_emissions, d):
     # Convert the data to a DataFrame
     data = pd.DataFrame(past_emissions)
 
@@ -28,7 +28,7 @@ def get_p_and_q_value (past_emissions):
     for p in range(max_p):
         for q in range(max_q):
             try:
-                model = ARIMA(df, order=(p, 0, q))
+                model = ARIMA(df, order=(p, d, q))
                 results = model.fit()
                 BIC[p, q] = results.bic
             except:

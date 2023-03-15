@@ -31,13 +31,17 @@ def get_future_emissons(past_emissions, future_date):
     train_data = df[-360:]
     test_data = df[:-360]
     
+    #use Dickey-Fuller test to calculate the differencing
+    from differencing import get_d_value
+    d = get_d_value(past_emissions)
+    
     #use BIC to calculate the p and q value
     from BIC import get_p_and_q_value
-    a, b = get_p_and_q_value(past_emissions)
+    a, b = get_p_and_q_value(past_emissions, d)
     
     # set the order for SARIMA
     p = a
-    d = 0
+    d = d
     q = b
     P = 0
     D = 0
