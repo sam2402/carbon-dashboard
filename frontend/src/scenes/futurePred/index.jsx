@@ -12,7 +12,7 @@ const FuturePred = () => {
 
   return (
     <Box m="20px">
-      <Header title="FUTURE PREDICTION" subtitle="" />
+      <Header title="FUTURE PREDICTION" subtitle="Time Span of 10 Years into the Future" />
       
       {/* GRID & CHARTS */}
       <Box
@@ -23,7 +23,7 @@ const FuturePred = () => {
       >
         {/* ROW 1 */}
         <Box
-          gridColumn="span 6"
+          gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
           
@@ -56,30 +56,11 @@ const FuturePred = () => {
           </Box>
         </Box>
 
-        
-        <Box
-          gridColumn="span 6"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="20px"
-    
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Geography Based Traffic
-          </Typography>
-          <Box height="35vh" width ="70vh">
-            <GeographyChartFuturePred  />
-          </Box>
-        </Box>
 
         {/* ROW 2 */}
 
         <Box
-          gridColumn="span 6"
+          gridColumn="span 8"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
 
@@ -97,7 +78,7 @@ const FuturePred = () => {
         </Box>
 
         <Box
-          gridColumn="span 6"
+          gridColumn="span 4"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
           padding="20px"

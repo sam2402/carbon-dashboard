@@ -11,7 +11,7 @@ const PastUsage = () => {
 
   return (
     <Box m="20px">
-      <Header title="PAST USAGE" subtitle="" />
+      <Header title="PAST USAGE" subtitle="Time Span of 10 Years in the Past" />
       
       {/* GRID & CHARTS */}
       <Box

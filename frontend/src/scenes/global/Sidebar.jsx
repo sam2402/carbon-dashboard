@@ -67,16 +67,14 @@ const Sidebar = () => {
               color: colors.grey[100],
             }}
           >
+            
             {!isCollapsed && (
               <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
-                ml="15px"
+                right="75px"
               >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  Volvo
-                </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -89,22 +87,15 @@ const Sidebar = () => {
               <Box display="flex" justifyContent="center" alignItems="center">
                 <img
                   alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/user.png`}
+                  width="150px"
+                  height="150px"
+                  src={`../../assets/logo192.png`}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
               <Box textAlign="center">
-                <Typography
-                  variant="h2"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  Team 22
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
+                
+                <Typography variant="h5" color={colors.greenAccent[500]} marginTop="20px">
                   Carbon Analysis Dashboard
                 </Typography>
               </Box>

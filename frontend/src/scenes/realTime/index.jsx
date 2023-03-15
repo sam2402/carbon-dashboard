@@ -15,7 +15,7 @@ const RealTime = () => {
 
   return (
     <Box m="20px">
-      <Header title="REAL TIME USAGE" subtitle="" />
+      <Header title="REAL TIME USAGE" subtitle="Time Span of last 24 hours" />
       
       {/* GRID & CHARTS */}
       <Box
@@ -26,7 +26,7 @@ const RealTime = () => {
       >
         {/* ROW 1 */}
         <Box
-          gridColumn="span 6"
+          gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
           
@@ -59,30 +59,11 @@ const RealTime = () => {
           </Box>
         </Box>
 
-        
-        <Box
-          gridColumn="span 6"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="20px"
-    
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Geography Based Traffic
-          </Typography>
-          <Box height="35vh" width ="70vh">
-            <GeographyChartRealTime  />
-          </Box>
-        </Box>
 
         {/* ROW 2 */}
 
         <Box
-          gridColumn="span 6"
+          gridColumn="span 8"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
 
@@ -100,7 +81,7 @@ const RealTime = () => {
         </Box>
 
         <Box
-          gridColumn="span 6"
+          gridColumn="span 4"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
           padding="20px"
