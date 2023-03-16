@@ -1,16 +1,23 @@
 import datetime
 from typing import Callable
 
-from azure.mgmt.resource.resources.models import GenericResourceExpanded
+from azure.mgmt.resource.resources.models import GenericResourceExpanded, ResourceGroup
+from azure.core.exceptions import HttpResponseError
 
 from .sources.objs import resource_metrics
 
 class ResourceCache:
 
-    def __init__(self, refresh_time: int, fetch_resources: Callable) -> None:
-        self._refresh_time: int = refresh_time
+    def __init__(self,
+                 refresh_time: int,
+                 fetch_resources: Callable[[], GenericResourceExpanded],
+                 fetch_resource_groups: Callable[[], ResourceGroup]) -> None:
+        self._refresh_time: datetime.timedelta = refresh_time
         self._resource_groups: dict[str: ResourceGroupCache] = {}
         self._fetch_resources: Callable = fetch_resources
+        self._fetch_resource_groups: Callable = fetch_resource_groups
+        self._last_resource_group_update: datetime.datetime = datetime.datetime(1970, 1, 1)
+        self._update_resource_groups()
 
     def get_resource(self, resource_group: str, resource_id: str) -> GenericResourceExpanded:
         self._update_resource_group(resource_group)
@@ -19,13 +26,37 @@ class ResourceCache:
     def get_resource_group(self, resource_group: str) -> list[GenericResourceExpanded]:
         self._update_resource_group(resource_group)
         return self._resource_groups[resource_group].resources
+    
+    def get_resource_groups(self) -> list[str]:
+        self._update_resource_groups()
+        return list(self._resource_groups.keys())
 
     def _update_resource_group(self, resource_group: str):
+        resources = []
         if resource_group not in self._resource_groups or self._resource_groups[resource_group].time_since_update > self._refresh_time:
             resources_response = self._fetch_resources(resource_group)
+            while True:
+                try:
+                    resource = resources_response.next()
+                    if resource.type in resource_metrics:
+                        resources.append(resource)
+                except StopIteration:
+                    break
+                except HttpResponseError as err:
+                    continue
+
             self._resource_groups[resource_group] = ResourceGroupCache(
-                list(filter(lambda resource: resource.type in resource_metrics, resources_response))
+                resources
             )
+    
+    def _update_resource_groups(self):
+        now = datetime.datetime.now()
+        if now-self._last_resource_group_update > self._refresh_time:
+            resource_group_response: list[ResourceGroup] = self._fetch_resource_groups()
+            for resource_group in resource_group_response:
+                self._update_resource_group(resource_group.name)
+            self._last_resource_group_update = now
+
 
 class ResourceGroupCache:
 
@@ -36,8 +67,8 @@ class ResourceGroupCache:
         self._timestamp = datetime.datetime.now()
 
     @property
-    def time_since_update(self) -> float:
-        return (datetime.datetime.now() - self._timestamp).total_seconds()
+    def time_since_update(self) -> datetime.timedelta:
+        return datetime.datetime.now() - self._timestamp
     
     @property
     def resources(self) -> list[GenericResourceExpanded]:
