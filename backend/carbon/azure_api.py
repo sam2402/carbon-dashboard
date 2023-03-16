@@ -7,43 +7,60 @@ from .resource import ResourceCache
 
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.resource import ResourceManagementClient
-from azure.mgmt.resource.resources.models import GenericResourceExpanded
+from azure.mgmt.resource.resources.models import GenericResourceExpanded, ResourceGroup
 from azure.mgmt.monitor import MonitorManagementClient
 
-ONE_HOUR = 60*60
+METRICS_RETENTION_PERIOD = 50
 
 class AzureClient:
+
+    _instance = None
 
     def __init__(self):
 
         credential = DefaultAzureCredential()
         subscription_id = os.environ["SUBSCRIPTION_ID"]
 
-        self.resource_client = ResourceManagementClient(credential, subscription_id)
-        self.monitor_client = MonitorManagementClient(credential, subscription_id)
+        self._resource_client = ResourceManagementClient(credential, subscription_id)
+        self._monitor_client = MonitorManagementClient(credential, subscription_id)
 
-        self.resource_cache = ResourceCache(ONE_HOUR, self.resource_client.resources.list_by_resource_group)
+        self._resource_cache = ResourceCache(
+            datetime.timedelta(hours=1),
+            self._resource_client.resources.list_by_resource_group,
+            self._resource_client.resource_groups.list
+        )
+    
+    # Implement AzureClient as a Singleton
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(AzureClient, cls).__new__(cls)
+        return cls._instance
     
     def _get_resource(self, resource_group: str, resource_id: str) -> GenericResourceExpanded:
-        return self.resource_cache.get_resource(resource_group, resource_id)
+        return self._resource_cache.get_resource(resource_group, resource_id)
+    
+    def get_resource_groups(self) -> list[str]:
+        return self._resource_cache.get_resource_groups()
 
     def get_resources_in_group(self, resource_group: str) -> list[GenericResourceExpanded]:
-        return self.resource_cache.get_resource_group(resource_group)
+        return self._resource_cache.get_resource_group(resource_group)
 
     def get_emissions_for_resource_group(self,
                                 resource_group: str,
                                 earliest_date: datetime.datetime = None,
+                                latest_date: datetime.datetime = None,
                                 interval: str = None,
-                                use_emissions_equivalent: bool = False
                                 ) -> list[dict[str, float]]:
         if earliest_date is None:
-            earliest_date = datetime.datetime.now().date()-datetime.timedelta(days=365)
+            earliest_date = datetime.datetime.now().date()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)
+        if latest_date is None:
+            latest_date = datetime.datetime.now().date()
         if interval is None:
             interval = "P1D"
 
         emissions_sum = {}
         for resource in self.get_resources_in_group(resource_group):
-            emissions = self.get_emissions_for_resource(resource_group, resource.id, earliest_date, interval, use_emissions_equivalent)
+            emissions = self.get_emissions_for_resource(resource_group, resource.id, earliest_date, latest_date, interval)
             for data_point in emissions:
                 date, value = data_point["date"], data_point["value"]
                 if date not in emissions_sum:
@@ -59,12 +76,14 @@ class AzureClient:
                                    resource_group: str,
                                    resource_id: str,
                                    earliest_date: datetime.datetime = None,
+                                   latest_date: datetime.datetime = None,
                                    interval: str = None,
-                                   use_emissions_equivalent: bool = False
                                    ) -> list[dict[datetime.datetime, float]]:
         
         if earliest_date is None:
-            earliest_date = datetime.datetime.now().date()-datetime.timedelta(days=700)
+            earliest_date = datetime.datetime.now().date()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)
+        if latest_date is None:
+            latest_date = datetime.datetime.now().date()
         if interval is None:
             interval = "P1D"
 
@@ -75,11 +94,9 @@ class AzureClient:
         except KeyError:
             raise Exception(f"Resource type: {resource.type} not supported")
 
-        today = datetime.datetime.now().date()
-
-        metrics_data = self.monitor_client.metrics.list(
+        metrics_data = self._monitor_client.metrics.list(
             resource_id,
-            timespan=f"{earliest_date}/{today}",
+            timespan=f"{earliest_date}/{latest_date}",
             interval=interval,
             metricnames=metric["name"],
             aggregation=metric["aggregation"]
@@ -91,9 +108,9 @@ class AzureClient:
                 for data in ts_element.data:
                     computer_value_proxy = data.total if data.total is not None else 0
                     carbon_emissions = computer_value_proxy * get_carbon_coefficient(resource, data.time_stamp, interval)
-                    data_points.append({
+                    data_points.append({ 
                         "date": data.time_stamp,
-                        "value": carbon_emissions
+                        "value": round(carbon_emissions, 6)
                     })
         
         return sorted(data_points, key = lambda data_point: data_point["date"])

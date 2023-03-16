@@ -10,10 +10,9 @@ class ElectricityMapperClient:
     def __init__(self):
         self.token = os.environ["ELECTRICITY_MAPPER_TOKEN"]
     
-    "Implement ElectricityMapperClient as a Singleton"
+    # Implement ElectricityMapperClient as a Singleton"
     def __new__(cls):
         if cls._instance is None:
-            print('Creating the object')
             cls._instance = super(ElectricityMapperClient, cls).__new__(cls)
         return cls._instance
     
@@ -39,7 +38,6 @@ class ElectricityMapperClient:
                 "auth-token": self.token,
             } 
         ).json()
-        print(response)
 
         return response["carbonIntensity"]
     

@@ -1,25 +1,24 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-from datetime import datetime
+from datetime import datetime, timezone
+
 from statsmodels.graphics.gofplots import qqplot 
 
-def calculate_step(past_data, future_date):
+def calculate_step(past_data, future_date: datetime):
     # Convert the 'date' column to datetime format
-    past_data_dates = [datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S') for data in past_data]
+    past_data_dates = [data['date'].replace(tzinfo=timezone.utc) for data in past_data]
+    # past_data_dates = [data['date'] for da ta in past_data]
 
     # Get the time difference between the last two dates
     time_delta = past_data_dates[-1] - past_data_dates[-2]
 
-    # Convert the future date string to datetime format
-    future_date = datetime.strptime(future_date, '%Y-%m-%d %H:%M:%S')
-
     # Calculate the step
-    step = int((future_date - past_data_dates[-1]).total_seconds() / time_delta.total_seconds())
+    step = int((future_date.replace(tzinfo=timezone.utc) - past_data_dates[-1]).total_seconds() / time_delta.total_seconds())
 
     return step
     
-def get_future_emissons(past_emissions, future_date):
+def get_future_emissions(past_emissions, future_date: datetime):
     # Convert the data to a DataFrame
     df = pd.DataFrame(past_emissions)
 
@@ -32,11 +31,11 @@ def get_future_emissons(past_emissions, future_date):
     test_data = df[:-360]
     
     #use Dickey-Fuller test to calculate the differencing
-    from differencing import get_d_value
+    from .differencing import get_d_value
     d = get_d_value(past_emissions)
     
     #use BIC to calculate the p and q value
-    from BIC import get_p_and_q_value
+    from .BIC import get_p_and_q_value
     a, b = get_p_and_q_value(past_emissions, d)
     
     # set the order for SARIMA
@@ -55,23 +54,23 @@ def get_future_emissons(past_emissions, future_date):
     model_fit = model.fit()
     
     # Print the model summary information
-    print(model_fit.summary())
+    # print(model_fit.summary())
 
     # Generate the model residuals
     residuals = model_fit.resid
 
     # Plot the histogram of residuals, check the accuracy by histogram of residuals
-    plt.hist(residuals)
-    plt.title("Residuals Histogram")
-    plt.xlabel("Residual Value")
-    plt.ylabel("Frequency")  # add y-axis
-    plt.show()
+    # plt.hist(residuals)
+    # plt.title("Residuals Histogram")
+    # plt.xlabel("Residual Value")
+    # plt.ylabel("Frequency")  # add y-axis
+    # plt.show()
     
     # Plot the QQ plot of residuals  
     # Using the 's' parameter to draw a reference line means drawing a line with a slope of 1 and an intercept of 0
-    qqplot(residuals, line='s')
-    plt.title("Residuals QQ Plot")
-    plt.show()
+    # qqplot(residuals, line='s')
+    # plt.title("Residuals QQ Plot")
+    # plt.show()
 
     # Get the number of steps to predict
     step = calculate_step(past_emissions, future_date)
@@ -83,13 +82,7 @@ def get_future_emissons(past_emissions, future_date):
     # Create the prediction result list
     pred_list_dic = []
     for i in range(step):
-        date_str = predict_time[i].strftime('%Y-%m-%d %H:%M:%S')
-        pred_list_dic.append({'date': date_str, 'value': predictions[i]})
+        date = predict_time[i].replace(second=0, microsecond=0)
+        pred_list_dic.append({'date': date, 'value': predictions[i]})
 
     return pred_list_dic
-      
-# Read the data from list_dic.py
-from list_dic import list
-x_list = list
-
-y = get_future_emissons(x_list, '2023-03-15 00:00:00')

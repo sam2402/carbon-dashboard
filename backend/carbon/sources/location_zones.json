@@ -3,6 +3,10 @@
         "longitude": "4.897070",
         "latitude": "52.377956"
     },
+    "northeurope": {
+        "longitude": "-6.266155",
+        "latitude": "53.350140"
+    },
     "uksouth": {
         "longitude": "-0.118092",
         "latitude": "51.509865"

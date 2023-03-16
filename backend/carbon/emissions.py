@@ -21,12 +21,9 @@ def get_carbon_coefficient(resource: GenericResource, time: datetime.datetime, i
 def get_cpu_time_eq(metric: str, interval: str) -> float:
     if metric in ["cpu_percent", "CpuPercentage"]:
         return duration_to_seconds(interval)
-    elif metric == "Usage":
+    elif metric in ["Usage", "Transactions", "SiteHits"]:
         # usage is the number of api calls made
         # assume each api call has 100% CPU utilization for 100ms
-        return 0.1
-    elif metric == "Transactions":
-        # assume each transaction call has 100% CPU utilization for 100ms
         return 0.1
     elif metric == "CpuTime":
         return 1

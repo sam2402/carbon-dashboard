@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 
 def get_p_and_q_value (past_emissions, d):
