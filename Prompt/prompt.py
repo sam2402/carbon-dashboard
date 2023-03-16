@@ -176,9 +176,3 @@ def get_prompt(carbon_data):
         advice_location = None
         
     return prompt
-
-# Read the data from list_dic.py
-from list_dic import list
-x_list = list
-
-y = get_prompt(x_list)
