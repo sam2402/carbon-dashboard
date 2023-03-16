@@ -4,7 +4,7 @@ from typing import Callable
 from azure.mgmt.resource.resources.models import GenericResourceExpanded, ResourceGroup
 from azure.core.exceptions import HttpResponseError
 
-from .sources.objs import resource_metrics
+from .sources.objs import resource_metrics, location_zones
 
 class ResourceCache:
 
@@ -85,8 +85,12 @@ def resource_to_dict(resource: GenericResourceExpanded):
         "id": resource.id,
         "name": resource.name,
         "type": resource.type,
-        "location": resource.location,
-        "extended_location": resource.extended_location,
+        "location": {
+            "azure_location": resource.location,
+            "longitude": location_zones[resource.location]["longitude"],
+            "latitude": location_zones[resource.location]["longitude"],
+            "extended_location": resource.extended_location,
+        },
         "tags": resource.tags,
         "kind": resource.kind,
         "managed_by": resource.managed_by,
