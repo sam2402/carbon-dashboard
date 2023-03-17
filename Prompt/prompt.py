@@ -15,7 +15,8 @@ class AdviceType(Enum):
     LOCATION = 2
     RESOURCE_CONFIGURATION = 3
     RESOURCE_WORK_TIME = 4
-
+    COOLING_TYPE = 5
+    
 def get_prompt(past_carbon_data: list[dict], resource: GenericResourceExpanded, power_consumption_breakdown: list, advice_type: AdviceType):
     prompt = ""
 
@@ -43,5 +44,8 @@ def get_prompt(past_carbon_data: list[dict], resource: GenericResourceExpanded, 
 
     elif advice_type == AdviceType.RESOURCE_WORK_TIME:
         prompt = f"The latest carbon emission data for the resource on {latest_data['date'].strftime('%Y-%m-%d')} having a value of {current_carbon_emission}, please provide advice for how to optimize the resource's working hours to decrease carbon emissions."
+        
+    elif advice_type == AdviceType.COOLING_TYPE:
+        prompt = f"The current carbon emission value is {current_carbon_emission}. Please provide advice on a suitable and efficient cooling type to replace the current one, along with an approximate cost estimation."
 
     return prompt
