@@ -1,21 +1,11 @@
-from enum import Enum
-from azure.mgmt.resource.resources.v2021_04_01.models import GenericResourceExpanded
-import json
+from azure.mgmt.resource.resources.models import GenericResourceExpanded
 
-# Load cpu.json
-with open("backend/carbon/sources/cpus.json", "r") as cpu_file:
-    cpus = json.load(cpu_file)
+from backend.advice.advice_types import AdviceType
+from backend.carbon.emissions import ResourceEmissionInfo
+from backend.carbon.sources.objs import cpus, location_zones
 
-# Load location_zone.json
-with open("backend/carbon/sources/location_zones.json", "r") as location_zone_file:
-    location_zones = json.load(location_zone_file)
-    
-class AdviceType(Enum):
-    ENERGY_TYPE = 1
-    LOCATION = 2
-    RESOURCE_CONFIGURATION = 3
-    RESOURCE_WORK_TIME = 4
-    COOLING_TYPE = 5
+# def get_prompt(resource_emission_infos: list[ResourceEmissionInfo], advice_type: AdviceType):
+#     return "Tell me how to reduce carbon emissions"
     
 def get_prompt(past_carbon_data: list[dict], resource: GenericResourceExpanded, power_consumption_breakdown: list, advice_type: AdviceType):
     prompt = ""

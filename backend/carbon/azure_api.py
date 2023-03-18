@@ -7,7 +7,7 @@ from .resource import ResourceCache
 
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.resource import ResourceManagementClient
-from azure.mgmt.resource.resources.models import GenericResourceExpanded, ResourceGroup
+from azure.mgmt.resource.resources.models import GenericResourceExpanded
 from azure.mgmt.monitor import MonitorManagementClient
 from .electricity_mapper_api import ElectricityMapperClient
 
@@ -26,7 +26,7 @@ class AzureClient:
         self._monitor_client = MonitorManagementClient(credential, subscription_id)
 
         self._resource_cache = ResourceCache(
-            datetime.timedelta(hours=1),
+            datetime.timedelta(hours=2),
             self._resource_client.resources.list_by_resource_group,
             self._resource_client.resource_groups.list
         )
@@ -37,7 +37,7 @@ class AzureClient:
             cls._instance = super(AzureClient, cls).__new__(cls)
         return cls._instance
     
-    def _get_resource(self, resource_group: str, resource_id: str) -> GenericResourceExpanded:
+    def get_resource(self, resource_group: str, resource_id: str) -> GenericResourceExpanded:
         return self._resource_cache.get_resource(resource_group, resource_id)
     
     def get_resource_groups(self) -> list[str]:
@@ -88,7 +88,7 @@ class AzureClient:
         if interval is None:
             interval = "P1D"
 
-        resource = self._get_resource(resource_group, resource_id)
+        resource = self.get_resource(resource_group, resource_id)
 
         try:
             metric = resource_metrics[resource.type]
