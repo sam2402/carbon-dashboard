@@ -75,6 +75,33 @@ def get_future_resource_emissions(resourceGroup: str, resourceId: str=None):
         return predictions.get_resource_prediction(resourceGroup)
     return predictions.get_resource_prediction(resourceGroup, resourceId)
 
+# @app.route("/advice")
+# def get_advice():
+#     resource_group_param = request.args.get("resourceGroup")
+#     resource_id_param = request.args.get("resourceId")
+#     azure_location_param = request.args.get("azureLocation")
+#     matching_resources = {} # resource group: [resources]
+#     for resource_group in azure_client.get_resource_groups():
+#         if resource_group_param is None or resource_group_param == resource_group:
+#             resource_group[resource_group] = []
+#             for resource in azure_client.get_resources_in_group(resource_group):
+#                 if resource_id_param or resource_id_param == resource.id:
+#                     if azure_location_param is None or azure_location_param == resource.location:
+#                         matching_resources.append(resource)
+    
+    
+#     for resource_group in matching_resources:
+        
+
+
+#     resource_emissions = [{
+#         resource.id: {
+#             "total_emissions":  azure_client.get_emissions_for_resource(
+#                 res, "/"+resourceId, earliest_date
+#             )
+#         }
+#     } for resource in matching_resources]
+
 
 if __name__ == "__main__":
     app.run()

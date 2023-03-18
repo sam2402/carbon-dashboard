@@ -6,15 +6,12 @@ from azure.mgmt.resource.resources.models import GenericResource
 from .sources.objs import resource_metrics, cpus, location_zones
 from .electricity_mapper_api import ElectricityMapperClient
 
-def get_carbon_coefficient(resource: GenericResource, time: datetime.datetime, interval: str) -> float:
+def get_carbon_coefficient(resource: GenericResource, carbon_per_kwh: int, interval: str) -> float:
     metric = resource_metrics[resource.type]
 
     cpu_power_rating: int = cpus[resource.sku.tier]["power"] if resource.sku and resource.sku.tier else cpus["default"]["power"]
     cpu_time_eq = get_cpu_time_eq(metric["name"], interval) # equivalent number of cpu seconds
     power_watts = cpu_power_rating * cpu_time_eq
-    
-    end_time = time + datetime.timedelta(seconds=duration_to_seconds(interval))
-    carbon_per_kwh = get_carbon_emissions_per_kwh(resource.location, time, end_time)
     
     return power_watts/1000 * carbon_per_kwh
 
@@ -30,7 +27,7 @@ def get_cpu_time_eq(metric: str, interval: str) -> float:
     raise KeyError(f"Unsupported metric: {metric}")
 
 def get_carbon_emissions_per_kwh(location: str, start_time: datetime.datetime, end_time: str) -> int:
-    lon, lat = location_zones[location]["longitude"], location_zones[location]["latitude"], 
+    lon, lat = location_zones[location]["longitude"], location_zones[location]["latitude"]
     return ElectricityMapperClient().get_average_emissions(lon, lat, start_time, end_time)
         
 def duration_to_seconds(duration: str) -> int:

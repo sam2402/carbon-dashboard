@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from .sources.objs import resource_metrics, cpus
+from .sources.objs import resource_metrics, location_zones
 from .emissions import get_carbon_coefficient
 from .resource import ResourceCache
 
@@ -9,6 +9,7 @@ from azure.identity import DefaultAzureCredential
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.resources.models import GenericResourceExpanded, ResourceGroup
 from azure.mgmt.monitor import MonitorManagementClient
+from .electricity_mapper_api import ElectricityMapperClient
 
 METRICS_RETENTION_PERIOD = 50
 
@@ -52,9 +53,9 @@ class AzureClient:
                                 interval: str = None,
                                 ) -> list[dict[str, float]]:
         if earliest_date is None:
-            earliest_date = datetime.datetime.now().date()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)
+            earliest_date = datetime.datetime.now()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)
         if latest_date is None:
-            latest_date = datetime.datetime.now().date()
+            latest_date = datetime.datetime.now()
         if interval is None:
             interval = "P1D"
 
@@ -81,9 +82,9 @@ class AzureClient:
                                    ) -> list[dict[datetime.datetime, float]]:
         
         if earliest_date is None:
-            earliest_date = datetime.datetime.now().date()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)
+            earliest_date = datetime.datetime.now()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)
         if latest_date is None:
-            latest_date = datetime.datetime.now().date()
+            latest_date = datetime.datetime.now()
         if interval is None:
             interval = "P1D"
 
@@ -96,18 +97,23 @@ class AzureClient:
 
         metrics_data = self._monitor_client.metrics.list(
             resource_id,
-            timespan=f"{earliest_date}/{latest_date}",
+            timespan=f"{earliest_date.date()}/{latest_date.date()}",
             interval=interval,
             metricnames=metric["name"],
             aggregation=metric["aggregation"]
         )
 
+        location = resource.location
+        lon, lat = location_zones[location]["longitude"], location_zones[location]["latitude"]
+        emissions_over_time = ElectricityMapperClient().get_emissions_over_time(lon, lat, earliest_date, latest_date)
+        
         data_points = []
         for item in metrics_data.value:
             for ts_element in item.timeseries:
                 for data in ts_element.data:
                     computer_value_proxy = data.total if data.total is not None else 0
-                    carbon_emissions = computer_value_proxy * get_carbon_coefficient(resource, data.time_stamp, interval)
+                    carbon_per_kwh = emissions_over_time[data.time_stamp.replace(minute=0, second=0, microsecond=0, tzinfo=None)]
+                    carbon_emissions = computer_value_proxy * get_carbon_coefficient(resource, carbon_per_kwh, interval)
                     data_points.append({ 
                         "date": data.time_stamp,
                         "value": round(carbon_emissions, 6)
