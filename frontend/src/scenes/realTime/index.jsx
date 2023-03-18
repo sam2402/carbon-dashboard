@@ -4,7 +4,6 @@ import { Box, Typography, useTheme} from "@mui/material";
 import Header from "../../components/Header";
 
 import LineChartRealTime from "../../components/LineChart/LineChartRealTime";
-import GeographyChartRealTime from "../../components/GeographyChart/GeographyChartRealTime";
 import BarChartRealTime from "../../components/BarChart/BarChartRealTime";
 import PieChartRealTime from "../../components/PieChart/PieChartRealTime";
 

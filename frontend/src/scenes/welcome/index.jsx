@@ -1,14 +1,31 @@
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import Header from "../../components/Header";
+import GeographyChart from "../../components/GeographyChart/GeographyChartRealTime";
+import { tokens } from "../../theme";
 
 const Welcome = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   return (
     <Box m="20px">
-      {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
-      </Box>
+      <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+      <Box
+        display="grid"
+        gridTemplateColumns="repeat(12, 1fr)"
+        gridAutoRows="125px"
+        gap="20px"
+      >
+        <Box
+          height="70vh"
+          border={`1px solid ${colors.grey[100]}`}
+          borderRadius="4px"
+          gridColumn="span 12"
+          gridRow="span 6"
+        >
+          <GeographyChart />
+        </Box>   
+      </Box>   
     </Box>
   );
 };
