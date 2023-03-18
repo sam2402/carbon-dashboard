@@ -13,7 +13,6 @@ def update_cache():
     for resource_group in _az_client.get_resource_groups():
         predictions_cache[resource_group] = {}
         for resource in _az_client.get_resources_in_group(resource_group):
-            print(resource_group, resource.id)
             predictions_cache[resource_group][resource.id] = _get_prediction(resource_group, resource.id, now)
     print("Cache updated!")
 

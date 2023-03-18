@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import datetime
 
 from isodate import parse_duration
@@ -32,3 +33,11 @@ def get_carbon_emissions_per_kwh(location: str, start_time: datetime.datetime, e
         
 def duration_to_seconds(duration: str) -> int:
     return parse_duration(duration).total_seconds()
+
+@dataclass
+class ResourceEmissionInfo:
+    resource: GenericResource
+    past_weeks_emissions: int
+    power_consumption_breakdown: int
+    fossil_free_percentage: int
+    renewable_percentage: int

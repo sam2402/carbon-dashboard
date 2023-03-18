@@ -16,6 +16,8 @@ def date_range(start: datetime.datetime, end: datetime.datetime, delta: datetime
 class ElectricityMapperClient:
 
     _instance = None
+    Fossil_free_sources = ["nuclear", "geothermal", "biomass", "wind", "solar", "hydro", "hydro discharge", "battery discharge"]
+    Renewable_sources = ["geothermal", "biomass", "wind", "solar", "hydro", "hydro discharge", "battery discharge"]
     
     def __init__(self):
         self.token = os.environ["ELECTRICITY_MAPPER_TOKEN"]
@@ -50,7 +52,12 @@ class ElectricityMapperClient:
             return self._get_emissions_average(longitude, latitude, start_time, end_time)
     
     @functools.cache
-    def get_power_consumption_breakdown(self, longitude: str, latitude: str, time: datetime.datetime) -> list:
+    def get_power_consumption_breakdown(self, longitude: str, latitude: str, time: datetime.datetime) -> tuple[dict, int, int]:
+        """
+        Dict of power types and percentage they contribute
+        Fossil free percentage integer
+        Renewable percentage integer
+        """
         url = "https://api.electricitymap.org/v3/power-breakdown/past-range"
         response: dict = requests.get(
             url,
@@ -63,9 +70,11 @@ class ElectricityMapperClient:
                 "auth-token": self.token,
             } 
         ).json()
-        
-        return response.get("data", power_consumption_breakdown_default)
-    
+        data = _get_power_consumption_breakdown_default() if "error" in response else response
+        detailed_power_consumption = {power_type: (value/data["powerConsumptionTotal"])*100 for power_type, value in data["powerConsumptionBreakdown"]}
+        return detailed_power_consumption, data["fossilFreePercentage"], data["renewablePercentage"]
+
+
     @functools.cache
     def _get_emissions_at_time(self, longitude: str, latitude: str, time: datetime.datetime) -> int:
         url = "https://api.electricitymap.org/v3/carbon-intensity/past"
@@ -108,67 +117,6 @@ class ElectricityMapperClient:
 
 
 # Defaults used here as Avanade's Electricity Mapper key does not support the required regions
-power_consumption_breakdown_default = {
-    "data": [
-        {
-        "zone": "DK-DK1",
-        "datetime": "2020-01-04T00:00:00.000Z",
-        "updatedAt": "2022-04-07T09:35:03.914Z",
-        "createdAt": "2022-02-04T15:49:58.284Z",
-        "powerConsumptionBreakdown": {
-            "nuclear": 65,
-            "geothermal": 0,
-            "biomass": 188,
-            "coal": 195,
-            "wind": 1642,
-            "solar": 0,
-            "hydro": 13,
-            "gas": 72,
-            "oil": 8,
-            "unknown": 5,
-            "hydro discharge": 0,
-            "battery discharge": 0
-        },
-        "powerProductionBreakdown": {
-            "nuclear": None,
-            "geothermal": None,
-            "biomass": 319,
-            "coal": 287,
-            "wind": 3088,
-            "solar": 0,
-            "hydro": 2,
-            "gas": 97,
-            "oil": 10,
-            "unknown": 3,
-            "hydro discharge": None,
-            "battery discharge": None
-        },
-        "powerImportBreakdown": {
-            "DE": 1070,
-            "NL": 0,
-            "SE": 0,
-            "DK-DK2": 0,
-            "NO-NO2": 0
-        },
-        "powerExportBreakdown": {
-            "DE": 0,
-            "NL": 700,
-            "SE": 12,
-            "DK-DK2": 589,
-            "NO-NO2": 1387
-        },
-        "fossilFreePercentage": 87,
-        "renewablePercentage": 84,
-        "powerConsumptionTotal": 2189,
-        "powerProductionTotal": 3806,
-        "powerImportTotal": 1070,
-        "powerExportTotal": 2687,
-        "isEstimated": False,
-        "estimationMethod": None
-        }
-    ]
-}
-
 def _get_emissions_at_time_default(time):
     return {
         "zone": "DE",
@@ -188,3 +136,27 @@ def _get_emissions_over_range_default(start_time, end_time):
             for time in date_range(start_time, end_time, datetime.timedelta(hours=1))
         ]
     }
+
+def _get_power_consumption_breakdown_default():
+        power_consumption_breakdown = {
+            "nuclear": random.randint(0, 150),
+            "geothermal": random.randint(0, 150),
+            "biomass": random.randint(0, 150),
+            "coal": random.randint(0, 150),
+            "wind": random.randint(0, 150),
+            "solar": random.randint(0, 150),
+            "hydro": random.randint(0, 150),
+            "gas": random.randint(0, 150),
+            "oil": random.randint(0, 150),
+            "unknown": random.randint(0, 10),
+            "hydro discharge": random.randint(0, 150),
+            "battery discharge": random.randint(0, 150),
+        }
+        total = sum(power_consumption_breakdown.values())
+
+        return {  
+            "powerConsumptionBreakdown": power_consumption_breakdown,
+            "fossilFreePercentage": round((total/sum(power_consumption_breakdown[source] for source in ElectricityMapperClient.Fossil_free_sources))*100),
+            "renewablePercentage": round((total/sum(power_consumption_breakdown[source] for source in ElectricityMapperClient.Renewable_sources))*100),
+            "powerConsumptionTotal": total
+        }
