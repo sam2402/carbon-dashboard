@@ -2,7 +2,6 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import LineChartFuturePred from "../../components/LineChart/LineChartFuturePred";
 import Header from "../../components/Header";
-import GeographyChartFuturePred from "../../components/GeographyChart/GeographyChartFuturePred";
 import BarChartFuturePred from "../../components/BarChart/BarChartFuturePred";
 import PieChartFuturePred from "../../components/PieChart/PieChartFuturePred";
 

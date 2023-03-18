@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "./scenes/global/Sidebar";
 import Topbar from "./scenes/global/Topbar";
+import Footer from "./scenes/global/Footer";
 import PastUsage from "./scenes/pastUsage";
 import FuturePred from "./scenes/futurePred";
 import RealTime from "./scenes/realTime";
@@ -32,6 +33,7 @@ function App() {
               <Route path="/resourceGroup" element={<ResourceGroup />} />
               <Route path="/region" element={<Region />} />
             </Routes>
+          <Footer setIsSidebar={setIsSidebar} />
           </main>
         </div>
       </ThemeProvider>
