@@ -20,11 +20,11 @@ azure_client: azure_api.AzureClient = azure_api.AzureClient()
 em_client: em_api.ElectricityMapperClient = em_api.ElectricityMapperClient()
 open_ai_client: open_ai_api.OpenAIClient = open_ai_api.OpenAIClient()
 
-# app.before_first_request(predictions.update_cache)
-# scheduler = BackgroundScheduler(daemon=True)
-# scheduler.add_job(predictions.update_cache, 'interval', minutes=60)
-# scheduler.start()
-# atexit.register(lambda: scheduler.shutdown())
+app.before_first_request(predictions.update_cache)
+scheduler = BackgroundScheduler(daemon=True)
+scheduler.add_job(predictions.update_cache, 'interval', minutes=60)
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown())
 
 @app.route("/")
 def start():
