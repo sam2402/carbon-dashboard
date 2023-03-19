@@ -22,7 +22,7 @@ class OpenAIClient:
     
     def get_advice(self, resource_emission_infos: list[ResourceEmissionInfo], advice_type: AdviceType) -> str:
         prompt = prompt_gen.get_prompt(resource_emission_infos, advice_type)
-        print("prompt", prompt, advice_type)
+        print("prompt:", prompt, advice_type)
         res = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
