@@ -20,11 +20,11 @@ azure_client: azure_api.AzureClient = azure_api.AzureClient()
 em_client: em_api.ElectricityMapperClient = em_api.ElectricityMapperClient()
 open_ai_client: open_ai_api.OpenAIClient = open_ai_api.OpenAIClient()
 
-app.before_first_request(predictions.update_cache)
-scheduler = BackgroundScheduler(daemon=True)
-scheduler.add_job(predictions.update_cache, 'interval', minutes=60)
-scheduler.start()
-atexit.register(lambda: scheduler.shutdown())
+# app.before_first_request(predictions.update_cache)
+# scheduler = BackgroundScheduler(daemon=True)
+# scheduler.add_job(predictions.update_cache, 'interval', minutes=60)
+# scheduler.start()
+# atexit.register(lambda: scheduler.shutdown())
 
 @app.route("/")
 def start():
@@ -110,12 +110,12 @@ def get_advice():
                 if resource_id_param is None or resource_id_param == resource.id:
                     if azure_location_param is None or azure_location_param == resource.location:
                         matching_resources[resource_group].append(resource)
-    
+
     resource_emission_infos = []
     for resource_group, resources in matching_resources.items():
         for resource in resources:
             one_week_ago = datetime.datetime.now()-datetime.timedelta(weeks=1)
-            emissions = azure_client.get_emissions_for_resource(resource_group, resource.id, earliest_date=one_week_ago, interval="P7D")
+            emissions = azure_client.get_emissions_for_resource(resource_group, resource.id, earliest_date=one_week_ago, interval="P1D")
             past_weeks_emissions = sum(data_point["value"] for data_point in emissions)
             lon, lat = location_zones[resource.location]["longitude"], location_zones[resource.location]["latitude"]
             power_consumption_breakdown, fossil_free_percentage, renewable_percentage = em_client.get_power_consumption_breakdown(lon, lat, datetime.datetime.now())
@@ -139,4 +139,4 @@ def get_advice():
 if __name__ == "__main__":
     app.run()
 
-# http://127.0.0.1:5000/advice?resourceGroup=EmTech_RAE&resourceId=subscriptions/59d64684-e7c9-4397-8982-6b775a473b74/resourceGroups/EmTech_RAE/providers/Microsoft.Web/staticSites/ava-emtech-rae
+# http://127.0.0.1:5000/advice?resourceGroup=EmTech_RAE&resourceId=/subscriptions/59d64684-e7c9-4397-8982-6b775a473b74/resourceGroups/EmTech_RAE/providers/Microsoft.Web/staticSites/ava-emtech-rae

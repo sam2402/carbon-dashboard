@@ -105,7 +105,12 @@ class AzureClient:
 
         location = resource.location
         lon, lat = location_zones[location]["longitude"], location_zones[location]["latitude"]
-        emissions_over_time = ElectricityMapperClient().get_emissions_over_time(lon, lat, earliest_date, latest_date)
+        emissions_over_time = ElectricityMapperClient().get_emissions_over_time(
+            lon,
+            lat,
+            earliest_date-datetime.timedelta(days=1),
+            max(latest_date+datetime.timedelta(days=1), datetime.datetime.now())
+        )
         
         data_points = []
         for item in metrics_data.value:
@@ -116,7 +121,7 @@ class AzureClient:
                     carbon_emissions = computer_value_proxy * get_carbon_coefficient(resource, carbon_per_kwh, interval)
                     data_points.append({ 
                         "date": data.time_stamp,
-                        "value": round(carbon_emissions, 6)
+                        "value": round(carbon_emissions, 1)
                     })
         
         return sorted(data_points, key = lambda data_point: data_point["date"])
