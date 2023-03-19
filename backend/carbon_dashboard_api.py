@@ -132,7 +132,6 @@ def get_advice():
             "energy_type": open_ai_client.get_advice(resource_emission_infos, AdviceType.ENERGY_TYPE),
             "location": open_ai_client.get_advice(resource_emission_infos, AdviceType.LOCATION),
             "resource_configuration": open_ai_client.get_advice(resource_emission_infos, AdviceType.RESOURCE_CONFIGURATION),
-            "resource_work_time": open_ai_client.get_advice(resource_emission_infos, AdviceType.RESOURCE_WORK_TIME),
             "cooling_type": open_ai_client.get_advice(resource_emission_infos, AdviceType.COOLING_TYPE),
         }
     }

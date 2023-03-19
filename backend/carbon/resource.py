@@ -9,7 +9,7 @@ from .sources.objs import resource_metrics, location_zones
 class ResourceCache:
 
     def __init__(self,
-                 refresh_time: int,
+                 refresh_time: datetime.timedelta,
                  fetch_resources: Callable[[], GenericResourceExpanded],
                  fetch_resource_groups: Callable[[], ResourceGroup]) -> None:
         self._refresh_time: datetime.timedelta = refresh_time
