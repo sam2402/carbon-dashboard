@@ -1,41 +1,31 @@
-from azure.mgmt.resource.resources.models import GenericResourceExpanded
-
 from backend.advice.advice_types import AdviceType
 from backend.carbon.emissions import ResourceEmissionInfo
 from backend.carbon.sources.objs import cpus, location_zones
-
-# def get_prompt(resource_emission_infos: list[ResourceEmissionInfo], advice_type: AdviceType):
-#     return "Tell me how to reduce carbon emissions"
     
-def get_prompt(past_carbon_data: list[dict], resource: GenericResourceExpanded, power_consumption_breakdown: list, advice_type: AdviceType):
+def get_prompt(resource_emission_infos: list[ResourceEmissionInfo], advice_type: AdviceType):
     prompt = ""
 
-    latest_data = past_carbon_data[-1]
-    current_carbon_emission = latest_data["value"]
+    for resource_emission_info in resource_emission_infos:
+        resource = resource_emission_info.resource
+        current_carbon_emission = resource_emission_info.past_weeks_emissions
+        power_consumption_breakdown = resource_emission_info.power_consumption_breakdown
 
-    if advice_type == AdviceType.ENERGY_TYPE:
-        prompt = f"The current carbon emission value: {current_carbon_emission}, please provide advice on how to change energy sources in order to decrease carbon emissions. Below is a list of each zone's breakdown of electricity use:\n"
-        for item in power_consumption_breakdown:
-            zone = item['zone']
-            breakdown = item['powerConsumptionBreakdown']
-            breakdown_summary = ', '.join([f"{k}: {v}" for k, v in breakdown.items()])
-            prompt += f"Zone {zone}: {breakdown_summary}\n"
-    
-    elif advice_type == AdviceType.LOCATION:
-        location_name = resource.location
-        lon, lat = location_zones[resource.location]["longitude"], location_zones[resource.location]["latitude"]
-        prompt = f"The current location of this resource is {location_name} at longitude {lon} and latitude {lat} and current carbon emission value is {current_carbon_emission}, please provide advice on how to change the location to decrease carbon emissions."
-   
-    elif advice_type == AdviceType.RESOURCE_CONFIGURATION:
-        cpu_tier = resource.sku["tier"] if resource.sku and "tier" in resource.sku else "default"
-        cpu_model = cpus[cpu_tier]["model"]
-        power_rating = cpus[cpu_tier]["power"]
-        prompt = f"The current resource configuration using a {cpu_model} CPU with a power rating of {power_rating} watts and current carbon emission value is {current_carbon_emission}, please provide advice on how to decrease carbon emissions by optimising the resource configuration."
+        if advice_type == AdviceType.ENERGY_TYPE:
+            prompt = f"Volvo have a server last week's carbon emission value is {current_carbon_emission}g, please provide advice on how to change energy sources in order to decrease carbon emissions. Below is a list of each zone's breakdown of electricity use:\n"
+            breakdown_summary = ', '.join([f"{k}: {v}" for k, v in power_consumption_breakdown.items()])
+            prompt += f"{breakdown_summary}\n"
 
-    elif advice_type == AdviceType.RESOURCE_WORK_TIME:
-        prompt = f"The latest carbon emission data for the resource on {latest_data['date'].strftime('%Y-%m-%d')} having a value of {current_carbon_emission}, please provide advice for how to optimize the resource's working hours to decrease carbon emissions."
-        
-    elif advice_type == AdviceType.COOLING_TYPE:
-        prompt = f"The current carbon emission value is {current_carbon_emission}. Please provide advice on a suitable and efficient cooling type to replace the current one, along with an approximate cost estimation."
+        elif advice_type == AdviceType.LOCATION:
+            location_name = resource.location
+            prompt = f"Volvo have a server is currently locted at {location_name} and last week's carbon emission value is {current_carbon_emission}g, could you please give some suggested location to move to then it can decrease carbon emissions.\n"
+
+        elif advice_type == AdviceType.RESOURCE_CONFIGURATION:
+            cpu_tier = resource.sku["tier"] if resource.sku and "tier" in resource.sku else "default"
+            cpu_model = cpus[cpu_tier]["model"]
+            power_rating = cpus[cpu_tier]["power"]
+            prompt = f"Volvo have a server is currently using a {cpu_model} CPU with a power rating of {power_rating} watts and last week's carbon emission value is {current_carbon_emission}g, could you please give some exact suggested cpu type with lower power ratings but similar compatibility to replace the current one then it can decrease carbon emissions."
+
+        elif advice_type == AdviceType.COOLING_TYPE:
+            prompt = f"Volvo have a server last week's carbon emission value is {current_carbon_emission}. Could you please suggest a suitable and efficient cooling type to the current server, along with an approximate cost estimation."
 
     return prompt

@@ -38,6 +38,6 @@ def duration_to_seconds(duration: str) -> int:
 class ResourceEmissionInfo:
     resource: GenericResource
     past_weeks_emissions: int
-    power_consumption_breakdown: int
+    power_consumption_breakdown: dict
     fossil_free_percentage: int
     renewable_percentage: int
