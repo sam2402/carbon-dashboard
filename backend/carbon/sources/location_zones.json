@@ -1,18 +1,22 @@
 {
     "westeurope": {
         "longitude": "4.897070",
-        "latitude": "52.377956"
+        "latitude": "52.377956",
+        "name": "Dublin"
     },
     "northeurope": {
         "longitude": "-6.266155",
-        "latitude": "53.350140"
+        "latitude": "53.350140",
+        "name": "Amsterdam"
     },
     "uksouth": {
         "longitude": "-0.118092",
-        "latitude": "51.509865"
+        "latitude": "51.509865",
+        "name": "London"
     },
     "eastus": {
         "longitude": "-78.024902",
-        "latitude": "37.926868"
+        "latitude": "37.926868",
+        "name": "Virginia"
     }
 }

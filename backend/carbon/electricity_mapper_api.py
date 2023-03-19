@@ -71,7 +71,7 @@ class ElectricityMapperClient:
             } 
         ).json()
         data = _get_power_consumption_breakdown_default() if "error" in response else response
-        detailed_power_consumption = {power_type: (value/data["powerConsumptionTotal"])*100 for power_type, value in data["powerConsumptionBreakdown"]}
+        detailed_power_consumption = {power_type: round(value/data["powerConsumptionTotal"]*100, 1) for power_type, value in data["powerConsumptionBreakdown"].items()}
         return detailed_power_consumption, data["fossilFreePercentage"], data["renewablePercentage"]
 
 

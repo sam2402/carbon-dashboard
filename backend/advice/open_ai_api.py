@@ -1,9 +1,10 @@
 import os
+import functools
 
 import openai
 
 from backend.advice.advice_types import AdviceType
-import backend.advice.prompt as prompt
+import backend.advice.prompt as prompt_gen
 from backend.carbon.emissions import ResourceEmissionInfo
 
 class OpenAIClient:
@@ -20,12 +21,13 @@ class OpenAIClient:
         return cls._instance
     
     def get_advice(self, resource_emission_infos: list[ResourceEmissionInfo], advice_type: AdviceType) -> str:
-        return openai.Completion.create(
+        prompt = prompt_gen.get_prompt(resource_emission_infos, advice_type)
+        print("prompt:", prompt, advice_type)
+        res = openai.Completion.create(
             model="text-davinci-003",
-            prompt=prompt.get_prompt(resource_emission_infos, advice_type),
-            temperature=0.7,
-            max_tokens=256,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )["choices"][0]["text"]
+            prompt=prompt,
+            max_tokens=1024,
+            temperature=1,
+        )
+        print("response:", res)
+        return res["choices"][0]["text"]

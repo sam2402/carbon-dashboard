@@ -102,6 +102,7 @@ def get_advice():
     resource_group_param = request.args.get("resourceGroup")
     resource_id_param = request.args.get("resourceId")
     azure_location_param = request.args.get("azureLocation")
+    advice_type_param = request.args.get("adviceType")
     matching_resources: dict[str, list[GenericResourceExpanded]] = {} # resource group: [resources]
     for resource_group in azure_client.get_resource_groups():
         if resource_group_param is None or resource_group_param == resource_group:
@@ -110,12 +111,12 @@ def get_advice():
                 if resource_id_param is None or resource_id_param == resource.id:
                     if azure_location_param is None or azure_location_param == resource.location:
                         matching_resources[resource_group].append(resource)
-    
+
     resource_emission_infos = []
     for resource_group, resources in matching_resources.items():
         for resource in resources:
             one_week_ago = datetime.datetime.now()-datetime.timedelta(weeks=1)
-            emissions = azure_client.get_emissions_for_resource(resource_group, resource.id, earliest_date=one_week_ago, interval="P7D")
+            emissions = azure_client.get_emissions_for_resource(resource_group, resource.id, earliest_date=one_week_ago, interval="P1D")
             past_weeks_emissions = sum(data_point["value"] for data_point in emissions)
             lon, lat = location_zones[resource.location]["longitude"], location_zones[resource.location]["latitude"]
             power_consumption_breakdown, fossil_free_percentage, renewable_percentage = em_client.get_power_consumption_breakdown(lon, lat, datetime.datetime.now())
@@ -126,18 +127,23 @@ def get_advice():
                 fossil_free_percentage=fossil_free_percentage,
                 renewable_percentage=renewable_percentage
             ))
+    
+    advice = {}
+    if advice_type_param is None or advice_type_param=="energyType":
+        advice["energyType"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.ENERGY_TYPE),
+    if advice_type_param is None or advice_type_param=="location":
+        advice["location"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.LOCATION),
+    if advice_type_param is None or advice_type_param=="resource_configuration":
+        advice["resource_configuration"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.RESOURCE_CONFIGURATION),
+    if advice_type_param is None or advice_type_param=="cooling_type":
+        advice["cooling_type"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.COOLING_TYPE),
+    
 
     return {
-        "value": {
-            "energy_type": open_ai_client.get_advice(resource_emission_infos, AdviceType.ENERGY_TYPE),
-            "location": open_ai_client.get_advice(resource_emission_infos, AdviceType.LOCATION),
-            "resource_configuration": open_ai_client.get_advice(resource_emission_infos, AdviceType.RESOURCE_CONFIGURATION),
-            "resource_work_time": open_ai_client.get_advice(resource_emission_infos, AdviceType.RESOURCE_WORK_TIME),
-            "cooling_type": open_ai_client.get_advice(resource_emission_infos, AdviceType.COOLING_TYPE),
-        }
+        "value": advice
     }
 
 if __name__ == "__main__":
     app.run()
 
-# http://127.0.0.1:5000/advice?resourceGroup=EmTech_RAE&resourceId=subscriptions/59d64684-e7c9-4397-8982-6b775a473b74/resourceGroups/EmTech_RAE/providers/Microsoft.Web/staticSites/ava-emtech-rae
+# http://127.0.0.1:5000/advice?resourceGroup=EmTech_RAE&resourceId=/subscriptions/59d64684-e7c9-4397-8982-6b775a473b74/resourceGroups/EmTech_RAE/providers/Microsoft.Web/staticSites/ava-emtech-rae
