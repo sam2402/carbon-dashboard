@@ -20,8 +20,8 @@ const Footer = () => {
     <Box display="flex" justifyContent="space-between" >
       <h1 style={{ color: "White", 
                    textAlign: "center", 
-                   marginTop: "-50px" }}>
-        Volvo - "We make cars for people who care about other people.""
+                   marginTop: "-40px" }}>
+        Volvo - "We make cars for people who care about other people."
       </h1>
       <Container>
         <Row>
@@ -40,8 +40,9 @@ const Footer = () => {
           </Column>
           <Column>
             <Heading>Contact Us</Heading>
-            <FooterLink href="#">Uttar Pradesh</FooterLink>
-            <FooterLink href="#">Ahemdabad</FooterLink>
+            <FooterLink href="#">UCL</FooterLink>
+            <FooterLink href="#">Avanade</FooterLink>
+            <FooterLink href="#">Volvo</FooterLink>
           </Column>
           <Column>
             <Heading>Social Media</Heading>

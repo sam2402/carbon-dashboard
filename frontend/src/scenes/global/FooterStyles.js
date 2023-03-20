@@ -6,6 +6,7 @@ export const Box = styled.div`
   bottom: 1;
   position: absolute;
   width: 100%;
+
    
   @media (max-width: 1000px) {
     padding: 70px 30px;
@@ -17,6 +18,7 @@ export const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     max-width: 1000px;
+    
     margin: 0 auto;
     /* background: red; */
 `
@@ -42,7 +44,7 @@ export const Row = styled.div`
    
 export const FooterLink = styled.a`
   color: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-size: 18px;
   text-decoration: none;
    
@@ -55,6 +57,6 @@ export const FooterLink = styled.a`
 export const Heading = styled.p`
   font-size: 24px;
   color: #70d8bd;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   font-weight: bold;
 `;
