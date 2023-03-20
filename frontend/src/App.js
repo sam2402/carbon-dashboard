@@ -33,7 +33,7 @@ function App() {
               <Route path="/resourceGroup" element={<ResourceGroup />} />
               <Route path="/region" element={<Region />} />
             </Routes>
-          <Footer setIsSidebar={setIsSidebar} />
+          <Footer setIsSidebar={setIsSidebar}/>
           </main>
         </div>
       </ThemeProvider>
