@@ -17,7 +17,7 @@ const Footer = () => {
   const colorMode = useContext(ColorModeContext);
 
   return (
-    <Box display="flex" justifyContent="space-between">
+    <Box display="flex" justifyContent="space-between" >
       <h1 style={{ color: "White", 
                    textAlign: "center", 
                    marginTop: "-50px" }}>
