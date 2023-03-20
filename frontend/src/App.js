@@ -22,7 +22,10 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          <Sidebar isSidebar={isSidebar} />
+          <div className="sidebar-footer-wrapper">
+            <Sidebar isSidebar={isSidebar} />
+            <Footer setIsSidebar={setIsSidebar} />
+          </div>
           <main className="content">
           <Topbar setIsSidebar={setIsSidebar} />
             <Routes>
@@ -33,7 +36,6 @@ function App() {
               <Route path="/resourceGroup" element={<ResourceGroup />} />
               <Route path="/region" element={<Region />} />
             </Routes>
-          <Footer setIsSidebar={setIsSidebar} />
           </main>
         </div>
       </ThemeProvider>
