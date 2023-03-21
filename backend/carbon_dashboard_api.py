@@ -23,11 +23,11 @@ azure_client: azure_api.AzureClient = azure_api.AzureClient()
 em_client: em_api.ElectricityMapperClient = em_api.ElectricityMapperClient()
 open_ai_client: open_ai_api.OpenAIClient = open_ai_api.OpenAIClient()
 
-app.before_first_request(predictions.update_cache)
-scheduler = BackgroundScheduler(daemon=True)
-scheduler.add_job(predictions.update_cache, 'interval', minutes=60)
-scheduler.start()
-atexit.register(lambda: scheduler.shutdown())
+# app.before_first_request(predictions.update_cache)
+# scheduler = BackgroundScheduler(daemon=True)
+# scheduler.add_job(predictions.update_cache, 'interval', minutes=60)
+# scheduler.start()
+# atexit.register(lambda: scheduler.shutdown())
 
 @app.route("/")
 def start():
@@ -103,6 +103,7 @@ def get_advice():
     resource_id_param = request.args.get("resourceId")
     azure_location_param = request.args.get("azureLocation")
     advice_type_param = request.args.get("adviceType")
+    print(advice_type_param)
     matching_resources: dict[str, list[GenericResourceExpanded]] = {} # resource group: [resources]
     for resource_group in azure_client.get_resource_groups():
         if resource_group_param is None or resource_group_param == resource_group:
@@ -130,13 +131,15 @@ def get_advice():
     
     advice = {}
     if advice_type_param is None or advice_type_param=="energyType":
+        print("Hello")
         advice["energyType"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.ENERGY_TYPE),
     if advice_type_param is None or advice_type_param=="location":
         advice["location"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.LOCATION),
-    if advice_type_param is None or advice_type_param=="resource_configuration":
-        advice["resource_configuration"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.RESOURCE_CONFIGURATION),
-    if advice_type_param is None or advice_type_param=="cooling_type":
-        advice["cooling_type"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.COOLING_TYPE),
+    if advice_type_param is None or advice_type_param=="resourceConfiguration":
+        advice["resourceConfiguration"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.RESOURCE_CONFIGURATION),
+    if advice_type_param is None or advice_type_param=="coolingType":
+        print("Hi")
+        advice["coolingType"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.COOLING_TYPE),
     
 
     return {

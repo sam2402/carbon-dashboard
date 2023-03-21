@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import Header from "../../components/Header";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -6,13 +6,72 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { tokens } from "../../theme";
+import { useState, useEffect } from "react";
 
 const ResourceGroup = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const resourceGroups = ["EmTech_RAE", "UCL_Water_Beats", "UKI_DAI_DataEngineering_Discovery"];
+
+  const [resourceGroup, setResourceGroup] = useState("EmTech_RAE")
+
+  const [energyTypeAdvice, setEnergyTypeAdvice] = useState("Loading...");
+  const [locationAdvice, setLocationAdvice] = useState("Loading...")
+  const [resourceConfigurationAdvice, setResourceConfigurationAdvice] = useState("Loading...")
+  const [coolingTypeAdvice, setCoolingTypeAdvice] = useState("Loading...")
+
+  useEffect(() => {
+
+    setEnergyTypeAdvice("Loading...")
+    setLocationAdvice("Loading...")
+    setResourceConfigurationAdvice("Loading...")
+    setCoolingTypeAdvice("Loading...")
+
+    const adviceTypes = {
+      "energyType": setEnergyTypeAdvice,
+      "location": setLocationAdvice,
+      "resourceConfiguration": setResourceConfigurationAdvice,
+      "coolingType": setCoolingTypeAdvice
+    }
+
+    Object.keys(adviceTypes).forEach(adviceType => {
+      fetch("http://127.0.0.1:5000/advice?"+ new URLSearchParams({
+        resourceGroup: resourceGroup,
+        adviceType: adviceType,
+      }))
+      .then( res =>  res.json() )
+      .then(res => {
+        console.log(res.value[adviceType][0].trim())
+        adviceTypes[adviceType](res.value[adviceType][0].trim())
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    });
+    
+  }, [resourceGroup])
+
+
   return (
     <Box m="20px">
-      <Header title="Resource Group" subtitle="Advice for a particular resource type" />
+      <Header title="Resource Group" subtitle="Advice for a specific resource group" />
+
+      <FormControl style = {{paddingBottom: "30px"}} fullWidth>
+        <InputLabel id="demo-simple-select-label">Resource Group</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={resourceGroup}
+          label="Resource Group"
+          onChange= {(event) => setResourceGroup(event.target.value)}
+        >
+          {resourceGroups.map(resourceGroup =>
+            <MenuItem key={resourceGroup} value={resourceGroup}>{resourceGroup}</MenuItem>
+          )}
+        </Select>
+      </FormControl>
+
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
@@ -20,8 +79,8 @@ const ResourceGroup = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            {" \n\nFor the server emtech-rae, it is recommended to reduce reliance on nuclear, coal, oil, and unknown energy sources. It is possible to use more geothermal, biomass, wind, solar, and hydro energy sources, as these have lower emission values. \n\nFor the server test-ava-rae/ETRAEdb, it is recommended to reduce reliance on coal, oil, and unknown energy sources. It is possible to use more geothermal, biomass, wind, solar, and hydro energy sources, as these have lower emission values. \n\nFor the server test-ava-rae/ETRAEdbtest, it is recommended to reduce reliance on nuclear, coal, oil, and unknown energy sources. It is possible to use more geothermal, biomass, wind, solar, and hydro energy sources, as these have lower emission values. \n\nFor the server test-ava-rae/master, it is recommended to reduce reliance on nuclear, coal, and oil energy sources. It is possible to use more geothermal, biomass, wind, solar, and hydro energy sources, as these have lower emission values. \n\nFor the server test-ava-rae/RAEDb, it is recommended to reduce reliance on coal, oil, and unknown energy sources. It is possible to use more nuclear, geothermal, biomass, wind, solar, and hydro energy sources, as these have lower emission values. \n\nFor the server raeledgerstorage, it is recommended to reduce reliance on nuclear, geothermal, coal, oil, and unknown energy sources. It is possible to use more biomass, wind, solar, hydro, and battery discharge energy sources, as these have lower emission values. \n\nFor the server raeterraformcodes, it is recommended to reduce reliance on nuclear, geothermal, coal, oil, and unknown energy sources. It is possible to use more biomass, wind, solar, hydro, and battery discharge energy sources, as these have lower emission values. \n\nFor the server opetechrae, it is recommended to reduce reliance on nuclear, coal, oil, and unknown energy sources. It is possible to use more geothermal, biomass, wind, solar, and hydro energy sources, as these have lower emission values. \n\nFor the server test-emtech-rae-api, it is recommended to reduce reliance on nuclear, coal, oil, and unknown energy sources. It is possible to use more geothermal, biomass, wind, solar, and hydro energy sources, as these have lower emission values. \n\nFor the server ava-emtech-rae, it is recommended to reduce reliance on nuclear, geothermal, coal, oil, and unknown energy sources. It is possible to use more biomass, wind, solar, hydro, and battery discharge energy sources, as these have lower emission values."}
+          <Typography style={{whiteSpace: 'pre-line'}}>
+            {energyTypeAdvice}
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -33,8 +92,9 @@ const ResourceGroup = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            {"\n\nVolvo server emtech-rae - Suggested Location: Dusseldorf \n\nVolvo server test-ava-rae/ETRAEdb - Suggested Location: Amsterdam \n\nVolvo server test-ava-rae/ETRAEdbtest - Suggested Location: Madrid\n\nVolvo server test-ava-rae/master - Suggested Location: Munich\n\nVolvo server test-ava-rae/RAEDb - Suggested Location: Barcelona \n\nVolvo server raeledgerstorage - Suggested Location: Helsinki\n\nVolvo server raeterraformcodes - Suggested Location: Paris\n\nVolvo server opetechrae - Suggested Location: Copenhagen \n\nVolvo server test-emtech-rae-api - Suggested Location: Stockholm\n\nVolvo server ava-emtech-rae - Suggested Location: Warsaw"}
+          <Typography style={{whiteSpace: 'pre-line'}}>
+            <strong>Suggested location for resources:</strong>
+            {"\n"+locationAdvice}
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -46,8 +106,8 @@ const ResourceGroup = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            {"\n\nSuggestions for Volvo server emtech-rae:\n\n-Intel Xeon E-2186G CPU with a power rating of 95W\n-Intel Xeon E-2176G CPU with a power rating of 80W\n-Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server test-ava-rae/ETRAEdb:\n\n-Intel Xeon E-2186G CPU with a power rating of 95W\n-Intel Xeon E-2176G CPU with a power rating of 80W\n-Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server test-ava-rae/ETRAEdbtest:\n\n-Intel Xeon E-2186G CPU with a power rating of 95W\n- Intel Xeon E-2176G CPU with a power rating of 80W\n- Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server test-ava-rae/master:\n\n-Intel Xeon E-2186G CPU with a power rating of 95W\n- Intel Xeon E-2176G CPU with a power rating of 80W\n- Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server test-ava-rae/RAEDb:\n\n- Intel Xeon E-2186G CPU with a power rating of 95W\n- Intel Xeon E-2176G CPU with a power rating of 80W\n- Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server raeledgerstorage:\n\n- Intel Xeon E-2186G CPU with a power rating of 95W\n- Intel Xeon E-2176G CPU with a power rating of 80W\n- Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server raeterraformcodes:\n\n- Intel Xeon E-2186G CPU with a power rating of 95W\n-Intel Xeon E-2176G CPU with a power rating of 80W\n-Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server opetechrae:\n\n- Intel Xeon E-2186G CPU with a power rating of 95W\n- Intel Xeon E-2176G CPU with a power rating of 80W\n- Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server test-emtech-rae-api:\n\n- Intel Xeon E-2186G CPU with a power rating of 95W\n- Intel Xeon E-2176G CPU with a power rating of 80W\n- Intel Xeon E-2244G CPU with a power rating of 95W\n\nSuggestions for Volvo server ava-emtech-rae:\n\n- Intel Xeon E-2186G CPU with a power rating of 95W\n- Intel Xeon E-2176G CPU with a power rating of 80W\n- Intel Xeon E-2244G CPU with a power rating of 95W"}
+          <Typography style={{whiteSpace: 'pre-line'}}>
+            {resourceConfigurationAdvice}
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -59,8 +119,8 @@ const ResourceGroup = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-          {"\n\n1. Volvo server emtech-rae: Liquid cooling with estimated cost of around $500.\n2. Volvo server test-ava-rae/ETRAEdb: Air-cooled radiator with estimated cost of around $300.\n3. Volvo server test-ava-rae/ETRAEdbtest: Liquid cooling with estimated cost of around $400.\n4. Volvo server test-ava-rae/master: Air-cooled radiator with estimated cost of around $400.\n5. Volvo server test-ava-rae/RAEDb: Air-cooled radiator with estimated cost of around $300.\n6. Volvo server raeledgerstorage: Liquid cooling with estimated cost of around $600.\n7. Volvo server raeterraformcodes: Liquid cooling with estimated cost of around $700.\n8. Volvo server opetechrae: Air-cooled radiator with estimated cost of around $400.\n9. Volvo server test-emtech-rae-api: Air-cooled radiator with estimated cost of around $400.\n10. Volvo server ava-emtech-rae: Liquid cooling with estimated cost of around $500."}
+          <Typography style={{whiteSpace: 'pre-line'}}>
+            {coolingTypeAdvice}
           </Typography>
         </AccordionDetails>
       </Accordion>

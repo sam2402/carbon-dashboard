@@ -1,4 +1,4 @@
-import { Box, useTheme, Select, FormControl, MenuItem, InputLabel} from "@mui/material";
+import { Box, useTheme, Select, FormControl, MenuItem, InputLabel, Typography } from "@mui/material";
 import { tokens } from "../../theme";
 import LineChartFuturePred from "../../components/LineChart/LineChartFuturePred";
 import Header from "../../components/Header";
@@ -38,6 +38,7 @@ const FuturePred = () => {
         gap="20px"
       >
         {/* ROW 1 */}
+
         <Box
           gridColumn="span 12"
           gridRow="span 3"
@@ -46,11 +47,22 @@ const FuturePred = () => {
         >
           <Box
             mt="10px"
-            p="0 20px"      
+            p="0 20px"
+         
           >
+            <Box >
+              <Typography
+                variant="h5"
+                fontWeight="600"
+                color={colors.grey[100]}
+              >
+                Future Emissions by Resource
+              </Typography>
+            </Box>
+            
           </Box>
-          <Box  height="35vh" m="-20px 0 0 0">
-            <LineChartFuturePred resourceGroup={resourceGroup}/>
+          <Box  height="45vh" m="-30px 0 0 0">
+            <LineChartFuturePred resourceGroup={resourceGroup} />
           </Box>
         </Box>
 
@@ -65,11 +77,22 @@ const FuturePred = () => {
         >
           <Box
             mt="10px"
-            p="0 20px"      
+            p="0 20px"
+         
           >
+            <Box >
+              <Typography
+                variant="h5"
+                fontWeight="600"
+                color={colors.grey[100]}
+              >
+                Future Emissions by Location
+              </Typography>
+            </Box>
+            
           </Box>
-          <Box  height="35vh" m="-20px 0 0 0">
-            <LineChartFuturePred resourceGroup={resourceGroup}/>
+          <Box  height="45vh" m="-30px 0 0 0">
+            <LineChartFuturePred resourceGroup={resourceGroup} />
           </Box>
         </Box>
       
