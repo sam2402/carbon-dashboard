@@ -1,17 +1,34 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme, Select, FormControl, MenuItem, InputLabel} from "@mui/material";
 import { tokens } from "../../theme";
 import LineChartFuturePred from "../../components/LineChart/LineChartFuturePred";
 import Header from "../../components/Header";
-import BarChartFuturePred from "../../components/BarChart/BarChartFuturePred";
-import PieChartFuturePred from "../../components/PieChart/PieChartFuturePred";
+import React, { useState } from 'react';
 
 const FuturePred = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const resourceGroups = ["EmTech_RAE", "UCL_Water_Beats", "UKI_DAI_DataEngineering_Discovery"];
+  const [resourceGroup, setResourceGroup] = useState(["EmTech_RAE"]);
+
   return (
     <Box m="20px">
-      <Header title="FUTURE PREDICTION" subtitle="Time Span of 10 Years into the Future" />
+      <Header title="FUTURE PREDICTION" subtitle="Next 3 Days" />
+
+      <FormControl style = {{paddingBottom: "30px"}} fullWidth>
+        <InputLabel id="demo-simple-select-label">Resource Group</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={resourceGroup}
+          label="Resource Group"
+          onChange= {(event) => setResourceGroup(event.target.value)}
+        >
+          {resourceGroups.map(resourceGroup =>
+            <MenuItem key={resourceGroup} value={resourceGroup}>{resourceGroup}</MenuItem>
+          )}
+        </Select>
+      </FormControl>
       
       {/* GRID & CHARTS */}
       <Box
@@ -29,29 +46,11 @@ const FuturePred = () => {
         >
           <Box
             mt="10px"
-            p="0 20px"
-         
+            p="0 20px"      
           >
-            <Box >
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              >
-                Total Carbon Usage
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                21,357,131 Metric Tonnes
-              </Typography>
-            </Box>
-            
           </Box>
           <Box  height="35vh" m="-20px 0 0 0">
-            <LineChartFuturePred />
+            <LineChartFuturePred resourceGroup={resourceGroup}/>
           </Box>
         </Box>
 
@@ -59,41 +58,21 @@ const FuturePred = () => {
         {/* ROW 2 */}
 
         <Box
-          gridColumn="span 8"
+          gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
-
+          
         >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ padding: "30px 30px 0 30px" }}
+          <Box
+            mt="10px"
+            p="0 20px"      
           >
-            Emissions type per Region
-          </Typography>
-          <Box height="40vh" mt="-20px">
-            <BarChartFuturePred />
+          </Box>
+          <Box  height="35vh" m="-20px 0 0 0">
+            <LineChartFuturePred resourceGroup={resourceGroup}/>
           </Box>
         </Box>
-
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="20px"
-
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Scopes of Emissions
-          </Typography>
-          <Box height="35vh" >
-            <PieChartFuturePred  />
-          </Box>
-        </Box>
+      
       </Box>
     </Box>
   );
