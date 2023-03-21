@@ -23,11 +23,11 @@ azure_client: azure_api.AzureClient = azure_api.AzureClient()
 em_client: em_api.ElectricityMapperClient = em_api.ElectricityMapperClient()
 open_ai_client: open_ai_api.OpenAIClient = open_ai_api.OpenAIClient()
 
-# app.before_first_request(predictions.update_cache)
-# scheduler = BackgroundScheduler(daemon=True)
-# scheduler.add_job(predictions.update_cache, 'interval', minutes=60)
-# scheduler.start()
-# atexit.register(lambda: scheduler.shutdown())
+app.before_first_request(predictions.update_cache)
+scheduler = BackgroundScheduler(daemon=True)
+scheduler.add_job(predictions.update_cache, 'interval', minutes=60)
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown())
 
 @app.route("/")
 def start():
@@ -41,12 +41,42 @@ def get_resource_ids(resourceGroup):
         "value": [resource.id for resource in resources]
     }
 
+@app.route("/resources")
 @app.route("/resources/<resourceGroup>")
-def get_resources(resourceGroup):
-    resources = azure_client.get_resources_in_group(resourceGroup)
+def get_resources(resourceGroup: str=None):
+    location_param = request.args.get("location")
+    if resourceGroup is not None:
+        resources: list[GenericResourceExpanded] = azure_client.get_resources_in_group(resourceGroup)
+    else:
+        resource_groups: list[str] = azure_client.get_resource_groups()
+        resources: list[GenericResourceExpanded] = []
+        for resource_group in resource_groups:
+            resources.extend(azure_client.get_resources_in_group(resource_group))
+    
+    if location_param is not None:
+        resources = list(filter(lambda resource: resource.location==location_param, resources))
+
     return {
         "value": list(map(resource_to_dict, resources))
     }
+
+@app.route("/locations")
+@app.route("/locations/<resourceGroup>")
+def get_locations(resourceGroup: str=None):
+    if resourceGroup is not None:
+        resources: list[GenericResourceExpanded] = azure_client.get_resources_in_group(resourceGroup)
+    else:
+        resource_groups: list[str] = azure_client.get_resource_groups()
+        resources: list[GenericResourceExpanded] = []
+        for resource_group in resource_groups:
+            resources.extend(azure_client.get_resources_in_group(resource_group))
+    
+    locations = set(map(lambda resource: resource.location, resources))
+
+    return {
+        "value": sorted(list(locations))
+    }
+
     
 @app.route("/past-resource-emissions/<resourceGroup>")
 @app.route("/past-resource-emissions/<resourceGroup>/<path:resourceId>")

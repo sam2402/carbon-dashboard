@@ -26,6 +26,7 @@ def main():
         # print("Seasonality detected and saved to seasonal_data.json")
     else:
         # print("No seasonality detected")
+        pass
 
 if __name__ == '__main__':
     main()
