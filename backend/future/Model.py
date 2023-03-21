@@ -42,10 +42,10 @@ def get_future_emissions(past_emissions, future_date: datetime):
     p = a
     d = d
     q = b
-    P = 0
-    D = 0
-    Q = 0
-    m = 0
+    P = 1
+    D = 1
+    Q = 1
+    m = 24
     
     # Fit the SARIMA model
     model = SARIMAX(train_data, order=(p, d, q), seasonal_order=(P, D, Q, m))
@@ -53,11 +53,14 @@ def get_future_emissions(past_emissions, future_date: datetime):
     # Train the SARIMA model
     model_fit = model.fit()
     
+    """
+    Uncomment below to plot testing and validation graphs
+    """
     # Print the model summary information
     # print(model_fit.summary())
 
     # Generate the model residuals
-    residuals = model_fit.resid
+    # residuals = model_fit.resid
 
     # Plot the histogram of residuals, check the accuracy by histogram of residuals
     # plt.hist(residuals)

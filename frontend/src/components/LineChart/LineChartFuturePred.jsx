@@ -17,7 +17,6 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
     }
 
     function formatDate(date) {
-      console.log(date)
       let res = new Date(date)
         .toLocaleDateString('en-gb', { 
           month:"numeric",
@@ -26,7 +25,6 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
           minute:"numeric"
         })
         .split(",").join('')
-        console.log(res)
         return res
   }
 
@@ -41,16 +39,16 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
       });
 
       Promise.all(promiseCollection).then((responses) => {
-        setData(responses.map((response, i) => {
-          return {
-            id: truncate(resources[i].name, 21),
-            color: tokens("dark").greenAccent[500],
-            data: response.value.map(dataPoint => ({
-              x: formatDate(dataPoint.date),
-              y: dataPoint.value,
-            }))
-          }
-        }))
+        let r = responses.map((response, i) => ({
+          id: truncate(resources[i].name, 21),
+          color: tokens("dark").greenAccent[500],
+          data: response.value.map(dataPoint => ({
+            x: formatDate(dataPoint.date),
+            y: dataPoint.value,
+          }))
+        })).filter(line => line.data.length !== 0)
+        console.log(r)
+        setData(r)
       });
     }
     
