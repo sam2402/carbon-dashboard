@@ -1,11 +1,69 @@
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockLineData as data } from "../../data/mockDataPast";
+import React, { useState, useEffect } from 'react';
 
-const LineChartPastUsage = ({ isCustomLineColors = false, isDashboard = false }) => {
+const LineChartPastUsage = ({ isCustomLineColors = false, isDashboard = false, resourceGroup="" }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+
+    function truncate(str, maxlength) {
+      return (str.length > maxlength) ?
+        str.slice(0, maxlength - 1) + '…' : str;
+    }
+
+    function formatDate(date) {
+      var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+  
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
+  
+      const res = [day, month, year].join('/');
+      return res
+  }
+
+    const setPastResourceEmissions = (resources) => {
+      const promiseCollection = [];
+      resources.map(resource => resource.id).forEach(resourceId => {
+        const apiResult = fetch("http://127.0.0.1:5000/past-resource-emissions/"+resourceGroup+resourceId)
+          .then(res => {
+            return res.json()
+          })
+        promiseCollection.push(apiResult);
+      });
+
+      Promise.all(promiseCollection).then((responses) => {
+        setData(responses.map((response, i) => {
+          return {
+            id: truncate(resources[i].name, 21),
+            color: tokens("dark").greenAccent[500],
+            data: response.value.map(dataPoint => ({
+              x: formatDate(dataPoint.date),
+              y: dataPoint.value,
+            }))
+          }
+        }))
+      });
+    }
+    
+    setData([])
+    fetch("http://127.0.0.1:5000/resources/"+resourceGroup)
+    .then(res => {
+      return res.json()
+    })
+    .then(resources => {
+      setPastResourceEmissions(resources.value)
+    })
+  }, [resourceGroup])
 
   return (
     <ResponsiveLine
@@ -43,9 +101,13 @@ const LineChartPastUsage = ({ isCustomLineColors = false, isDashboard = false })
           },
         },
       }}
-      colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }} // added
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-      xScale={{ type: "point" }}
+      colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }}
+      margin={{ top: 50, right: 180, bottom: 50, left: 60 }}
+      xScale={{ 
+        format: "%d/%m/%Y",
+        type: "time",
+      }}
+      xFormat="time:%d/%m/%Y"
       yScale={{
         type: "linear",
         min: "auto",
@@ -60,11 +122,13 @@ const LineChartPastUsage = ({ isCustomLineColors = false, isDashboard = false })
       axisBottom={{
         orient: "bottom",
         tickSize: 0,
+        tickValues: "every 5 days",
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "Year", // added
+        legend: isDashboard ? undefined : "Time", // added
         legendOffset: 36,
         legendPosition: "middle",
+        format: "%d/%m/%Y",
       }}
       axisLeft={{
         orient: "left",
@@ -72,7 +136,7 @@ const LineChartPastUsage = ({ isCustomLineColors = false, isDashboard = false })
         tickSize: 3,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "Carbon emisions", // added
+        legend: isDashboard ? undefined : "Carbon Emissions (g)", // added
         legendOffset: -40,
         legendPosition: "middle",
       }}

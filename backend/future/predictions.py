@@ -37,7 +37,10 @@ def get_resource_prediction(resource_group: str, *resource_ids: list[str]):
     
     emissions_sum = {}
     for resource_id in resource_ids:
-        emissions = predictions_cache[resource_group][resource_id]
+        try:
+            emissions = predictions_cache[resource_group][resource_id]
+        except KeyError:
+            emissions = predictions_cache[resource_group]["/"+resource_id]
 
         for data_point in emissions:
             date, value = data_point["date"], data_point["value"]
