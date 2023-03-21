@@ -46,6 +46,17 @@ class AzureClient:
     def get_resources_in_group(self, resource_group: str) -> list[GenericResourceExpanded]:
         return self._resource_cache.get_resource_group(resource_group)
 
+    def get_resources_at_location(self, location: str, resource_group: str=None) -> dict[str: GenericResourceExpanded]:
+        resources = {}
+        for resource_group_name in self.get_resource_groups():
+            if resource_group is None or resource_group_name == resource_group:
+                resources[resource_group_name] = []
+                for resource in self.get_resources_in_group(resource_group_name):
+                    if resource.location == location:
+                        resources[resource_group_name].append(resource)
+        return resources
+                
+
     def get_emissions_for_resource_group(self,
                                 resource_group: str,
                                 earliest_date: datetime.datetime = None,

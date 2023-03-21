@@ -1,5 +1,7 @@
 import datetime
 
+from azure.mgmt.resource.resources.models import GenericResourceExpanded
+
 from ..carbon.azure_api import AzureClient
 from .Model import get_future_emissions
 
@@ -54,4 +56,25 @@ def get_resource_prediction(resource_group: str, *resource_ids: list[str]):
         key = lambda data_point: data_point["date"]
     )
 
+def get_location_prediction(location: str, resource_group: str=None):
+    resources_in_groups: dict[str: GenericResourceExpanded] = _az_client.get_resources_at_location(location, resource_group)
+    emissions_sum = {}
 
+    for resource_group, resources in resources_in_groups.items():
+        for resource in resources:
+            try:
+                emissions = predictions_cache[resource_group][resource.id]
+            except KeyError:
+                emissions = predictions_cache[resource_group]["/"+resource.id]
+
+            for data_point in emissions:
+                date, value = data_point["date"], data_point["value"]
+                if date not in emissions_sum:
+                    emissions_sum[date] = 0
+                emissions_sum[date] += value
+        
+        return sorted(
+            [{"date": date, "value": value} for date, value in emissions_sum.items()],
+            key = lambda data_point: data_point["date"]
+        )
+            
