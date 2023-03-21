@@ -163,6 +163,7 @@ const LineChartPastUsage = ({ isCustomLineColors = false, isDashboard = false, r
           symbolSize: 12,
           symbolShape: "circle",
           symbolBorderColor: "rgba(0, 0, 0, .5)",
+          toggleSerie: true,
           effects: [
             {
               on: "hover",

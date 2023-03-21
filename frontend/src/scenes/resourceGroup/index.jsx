@@ -35,15 +35,14 @@ const ResourceGroup = () => {
       "coolingType": setCoolingTypeAdvice
     }
 
-    Object.keys(adviceTypes).forEach(adviceType => {
+    Object.entries(adviceTypes).forEach(([adviceType, setAdviceType]) => {
       fetch("http://127.0.0.1:5000/advice?"+ new URLSearchParams({
         resourceGroup: resourceGroup,
         adviceType: adviceType,
       }))
       .then( res =>  res.json() )
       .then(res => {
-        console.log(res.value[adviceType][0].trim())
-        adviceTypes[adviceType](res.value[adviceType][0].trim())
+        setAdviceType(res.value[adviceType][0].trim())
       })
       .catch(err => {
         console.log(err)

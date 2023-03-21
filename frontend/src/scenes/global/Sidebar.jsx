@@ -89,7 +89,7 @@ const Sidebar = () => {
                   alt="profile-user"
                   width="150px"
                   height="150px"
-                  src={`../../assets/Volvo.png`}
+                  src={`../../assets/VolvoDark.png`}
                 />
               </Box>
               <Box textAlign="center">

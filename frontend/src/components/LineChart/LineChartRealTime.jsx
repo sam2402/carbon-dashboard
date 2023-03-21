@@ -99,6 +99,7 @@ const LineChartRealTime = ({ isCustomLineColors = false, isDashboard = false }) 
           symbolSize: 12,
           symbolShape: "circle",
           symbolBorderColor: "rgba(0, 0, 0, .5)",
+          toggleSerie: true,
           effects: [
             {
               on: "hover",
