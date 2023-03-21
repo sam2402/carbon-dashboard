@@ -3,7 +3,7 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import React, { useState, useEffect } from 'react';
 
-const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, resourceGroup="" }) => {
+const LineChartFutureResourceGroupPred = ({ isCustomLineColors = false, isDashboard = false, resourceGroup = "" }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -18,20 +18,20 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
 
     function formatDate(date) {
       let res = new Date(date)
-        .toLocaleDateString('en-gb', { 
-          month:"numeric",
-          hour:"numeric",
-          day:"numeric",
-          minute:"numeric"
+        .toLocaleDateString('en-gb', {
+          month: "numeric",
+          hour: "numeric",
+          day: "numeric",
+          minute: "numeric"
         })
         .split(",").join('')
-        return res
-  }
+      return res
+    }
 
     const setFutureResourceEmissions = (resources) => {
       const promiseCollection = [];
       resources.map(resource => resource.id).forEach(resourceId => {
-        const apiResult = fetch("http://127.0.0.1:5000/future-resource-emissions/"+resourceGroup+resourceId)
+        const apiResult = fetch("http://127.0.0.1:5000/future-resource-emissions/" + resourceGroup + resourceId)
           .then(res => {
             return res.json()
           })
@@ -51,15 +51,15 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
         setData(r)
       });
     }
-    
+
     setData([])
-    fetch("http://127.0.0.1:5000/resources/"+resourceGroup)
-    .then(res => {
-      return res.json()
-    })
-    .then(resources => {
-      setFutureResourceEmissions(resources.value)
-    })
+    fetch("http://127.0.0.1:5000/resources/" + resourceGroup)
+      .then(res => {
+        return res.json()
+      })
+      .then(resources => {
+        setFutureResourceEmissions(resources.value)
+      })
   }, [resourceGroup])
 
   return (
@@ -100,7 +100,7 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
       }}
       colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }}
       margin={{ top: 50, right: 180, bottom: 50, left: 60 }}
-      xScale={{ 
+      xScale={{
         format: "%d/%m %H:%M",
         type: "time",
       }}
@@ -109,7 +109,7 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
         type: "linear",
         min: "auto",
         max: "auto",
-        stacked: true,
+        stacked: false,
         reverse: false,
       }}
       yFormat=" >-.2f"
@@ -129,7 +129,7 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
       }}
       axisLeft={{
         orient: "left",
-        tickValues: 5, // added
+        // tickValues: 5, // added
         tickSize: 3,
         tickPadding: 5,
         tickRotation: 0,
@@ -176,4 +176,4 @@ const LineChartFuturePred = ({ isCustomLineColors = false, isDashboard = false, 
   );
 };
 
-export default LineChartFuturePred;
+export default LineChartFutureResourceGroupPred;

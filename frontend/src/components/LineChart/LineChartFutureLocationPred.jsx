@@ -1,11 +1,68 @@
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockLineData as data } from "../../data/mockDataPresent";
+import React, { useState, useEffect } from 'react';
 
-const LineChartRealTime = ({ isCustomLineColors = false, isDashboard = false }) => {
+const LineChartFutureLocationPred = ({ isCustomLineColors = false, isDashboard = false, resourceGroup = "" }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+
+    function truncate(str, maxlength) {
+      return (str.length > maxlength) ?
+        str.slice(0, maxlength - 1) + '…' : str;
+    }
+
+    function formatDate(date) {
+      let res = new Date(date)
+        .toLocaleDateString('en-gb', {
+          month: "numeric",
+          hour: "numeric",
+          day: "numeric",
+          minute: "numeric"
+        })
+        .split(",").join('')
+      return res
+    }
+
+    const setFutureLocationEmissions = (locations) => {
+      const promiseCollection = [];
+      locations.forEach(location => {
+        const apiResult = fetch("http://127.0.0.1:5000/future-resource-emissions/" + resourceGroup + "?" + new URLSearchParams({
+          location: location
+        }))
+        .then(res => {
+          return res.json()
+        })
+        promiseCollection.push(apiResult);
+      });
+
+      Promise.all(promiseCollection).then((responses) => {
+        let r = responses.map((response, i) => ({
+          id: truncate(locations[i], 21),
+          color: tokens("dark").greenAccent[500],
+          data: response.value.map(dataPoint => ({
+            x: formatDate(dataPoint.date),
+            y: dataPoint.value,
+          }))
+        })).filter(line => line.data.length !== 0)
+        console.log(r)
+        setData(r)
+      });
+    }
+
+    setData([])
+    fetch("http://127.0.0.1:5000/locations/" + resourceGroup)
+      .then(res => {
+        return res.json()
+      })
+      .then(resources => {
+        setFutureLocationEmissions(resources.value)
+      })
+  }, [resourceGroup])
 
   return (
     <ResponsiveLine
@@ -43,9 +100,13 @@ const LineChartRealTime = ({ isCustomLineColors = false, isDashboard = false }) 
           },
         },
       }}
-      colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }} // added
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-      xScale={{ type: "point" }}
+      colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }}
+      margin={{ top: 50, right: 180, bottom: 50, left: 60 }}
+      xScale={{
+        format: "%d/%m %H:%M",
+        type: "time",
+      }}
+      xFormat="time:%d/%m %H:%M"
       yScale={{
         type: "linear",
         min: "auto",
@@ -60,11 +121,13 @@ const LineChartRealTime = ({ isCustomLineColors = false, isDashboard = false }) 
       axisBottom={{
         orient: "bottom",
         tickSize: 0,
+        tickValues: "every day",
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "Year", // added
+        legend: isDashboard ? undefined : "Time", // added
         legendOffset: 36,
         legendPosition: "middle",
+        format: "%d/%m %H:%M",
       }}
       axisLeft={{
         orient: "left",
@@ -72,7 +135,7 @@ const LineChartRealTime = ({ isCustomLineColors = false, isDashboard = false }) 
         tickSize: 3,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "Carbon emisions", // added
+        legend: isDashboard ? undefined : "Carbon Emissions (g)", // added
         legendOffset: -40,
         legendPosition: "middle",
       }}
@@ -115,4 +178,4 @@ const LineChartRealTime = ({ isCustomLineColors = false, isDashboard = false }) 
   );
 };
 
-export default LineChartRealTime;
+export default LineChartFutureLocationPred;

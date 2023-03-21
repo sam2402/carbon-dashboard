@@ -1,6 +1,7 @@
 import { Box, useTheme, Select, FormControl, MenuItem, InputLabel, Typography } from "@mui/material";
 import { tokens } from "../../theme";
-import LineChartFuturePred from "../../components/LineChart/LineChartFuturePred";
+import LineChartFutureResourceGroupPred from "../../components/LineChart/LineChartFutureResourceGroupPred";
+import LineChartFutureLocationPred from "../../components/LineChart/LineChartFutureLocationPred";
 import Header from "../../components/Header";
 import React, { useState } from 'react';
 
@@ -15,21 +16,21 @@ const FuturePred = () => {
     <Box m="20px">
       <Header title="FUTURE PREDICTION" subtitle="Next 3 Days" />
 
-      <FormControl style = {{paddingBottom: "30px"}} fullWidth>
+      <FormControl style={{ paddingBottom: "30px" }} fullWidth>
         <InputLabel id="demo-simple-select-label">Resource Group</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={resourceGroup}
           label="Resource Group"
-          onChange= {(event) => setResourceGroup(event.target.value)}
+          onChange={(event) => setResourceGroup(event.target.value)}
         >
           {resourceGroups.map(resourceGroup =>
             <MenuItem key={resourceGroup} value={resourceGroup}>{resourceGroup}</MenuItem>
           )}
         </Select>
       </FormControl>
-      
+
       {/* GRID & CHARTS */}
       <Box
         display="grid"
@@ -43,12 +44,12 @@ const FuturePred = () => {
           gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
-          
+
         >
           <Box
             mt="10px"
             p="0 20px"
-         
+
           >
             <Box >
               <Typography
@@ -59,10 +60,10 @@ const FuturePred = () => {
                 Future Emissions by Resource
               </Typography>
             </Box>
-            
+
           </Box>
-          <Box  height="45vh" m="-30px 0 0 0">
-            <LineChartFuturePred resourceGroup={resourceGroup} />
+          <Box height="50vh" m="-30px 0 0 0">
+            <LineChartFutureResourceGroupPred resourceGroup={resourceGroup} />
           </Box>
         </Box>
 
@@ -73,12 +74,12 @@ const FuturePred = () => {
           gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
-          
+
         >
           <Box
             mt="10px"
             p="0 20px"
-         
+
           >
             <Box >
               <Typography
@@ -89,18 +90,18 @@ const FuturePred = () => {
                 Future Emissions by Location
               </Typography>
             </Box>
-            
+
           </Box>
-          <Box  height="45vh" m="-30px 0 0 0">
-            <LineChartFuturePred resourceGroup={resourceGroup} />
+          <Box height="45vh" m="-30px 0 0 0">
+            <LineChartFutureLocationPred resourceGroup={resourceGroup}/>
           </Box>
         </Box>
-      
+
       </Box>
     </Box>
   );
-  
-  
+
+
 };
 
 export default FuturePred;

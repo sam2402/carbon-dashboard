@@ -115,8 +115,15 @@ def get_past_total_emissions(resourceGroup: str, resourceId: str=None):
 @app.route("/future-resource-emissions/<resourceGroup>")
 @app.route("/future-resource-emissions/<resourceGroup>/<path:resourceId>")
 def get_future_resource_emissions(resourceGroup: str, resourceId: str=None):
-    emissions = predictions.get_resource_prediction(resourceGroup) if resourceId is None else \
-                predictions.get_resource_prediction(resourceGroup, resourceId)
+    location_param = request.args.get("location")
+    if resourceId is None and location_param is not None:
+        emissions = predictions.get_location_prediction(location_param, resourceGroup)
+    elif resourceId is None and resourceGroup is not None:
+        emissions = predictions.get_resource_prediction(resourceGroup)
+    elif resourceId is not None and resourceGroup is not None:
+        emissions = predictions.get_resource_prediction(resourceGroup, resourceId)
+    else:
+        raise ValueError("You must specify a resourceGroup")
     
     return {
         "value": [
