@@ -59,7 +59,7 @@ const FuturePred = () => {
         {/* ROW 2 */}
 
         <Box
-          gridColumn="span 8"
+          gridColumn="span 7"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
 
@@ -77,7 +77,7 @@ const FuturePred = () => {
         </Box>
 
         <Box
-          gridColumn="span 4"
+          gridColumn="span 5"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
           padding="20px"

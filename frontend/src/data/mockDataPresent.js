@@ -61,22 +61,16 @@ export const mockBarData = [
 export const mockPieData = [
  
   {
-    id: "Scope 1",
-    label: "Scope 1",
-    value: 170,
+    id: "Renewable",
+    label: "Renewable",
+    value: 31,
     color: "hsl(162, 70%, 50%)",
   },
   {
-    id: "Scope 2",
-    label: "Scope 2",
-    value: 322,
+    id: "Non-Renewable",
+    label: "Non-Renewable",
+    value: 69,
     color: "hsl(291, 70%, 50%)",
-  },
-  {
-    id: "Scope 3",
-    label: "Scope 3",
-    value: 584,
-    color: "hsl(344, 70%, 50%)",
   },
 ];
 

@@ -29,7 +29,7 @@ function App() {
           <main className="content">
           <Topbar setIsSidebar={setIsSidebar} />
             <Routes>
-              <Route path="/welcome" element={<Welcome />} />
+              <Route path="/" element={<Welcome />} />
               <Route path="/pastUsage" element={<PastUsage />} />
               <Route path="/realTime" element={<RealTime />} />
               <Route path="/futurePred" element={<FuturePred />} />
