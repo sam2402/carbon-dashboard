@@ -56,7 +56,7 @@ const Sidebar = () => {
         },
       }}
     >
-      <ProSidebar collapsed={isCollapsed}>
+      <ProSidebar collapsed={isCollapsed}  style={{ height: "985px" }}>
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem
@@ -90,7 +90,6 @@ const Sidebar = () => {
                   width="150px"
                   height="150px"
                   src={`../../assets/logo192.png`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
               <Box textAlign="center">
