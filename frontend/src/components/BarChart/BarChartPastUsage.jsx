@@ -39,7 +39,7 @@ const BarChartPastUsage = ({ isDashboard = false }) => {
           },
         },
       }}
-      keys={["server", "PC", "employeeManagement", "others"]}
+      keys={["Server", "PC", "employeeManagement", "others"]}
       indexBy="continent"
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.3}

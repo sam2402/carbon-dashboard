@@ -91,8 +91,8 @@ const PastUsage = () => {
         {/* ROW 2 */}
 
         <Box
-          gridColumn="span 8"
-          gridRow="span 5"
+          gridColumn="span 7"
+          gridRow="span 3"
           backgroundColor={colors.primary[400]}
 
         >
@@ -109,7 +109,7 @@ const PastUsage = () => {
         </Box>
 
         <Box
-          gridColumn="span 4"
+          gridColumn="span 5"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
           padding="20px"

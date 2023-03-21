@@ -3,8 +3,8 @@ import { tokens } from "../theme";
 export const mockBarData = [
   {
     continent: "Asia",
-    "server": 10,
-    "serverColor": "hsl(229, 70%, 50%)",
+    Server: 10,
+    ServerColor: "hsl(307, 70%, 50%)",
     PC: 50,
     PCColor: "hsl(296, 70%, 50%)",
     employeeManagement: 10,
@@ -14,8 +14,8 @@ export const mockBarData = [
   },
   {
     continent: "Europe",
-    "server": 20,
-    "serverColor": "hsl(307, 70%, 50%)",
+    Server: 20,
+    ServerColor: "hsl(307, 70%, 50%)",
     PC: 40,
     PCColor: "hsl(111, 70%, 50%)",
     employeeManagement: 20,
@@ -25,8 +25,8 @@ export const mockBarData = [
   },
   {
     continent: "North America",
-    "server": 30,
-    "serverColor": "hsl(72, 70%, 50%)",
+    Server: 30,
+    ServerColor: "hsl(307, 70%, 50%)",
     PC: 30,
     PCColor: "hsl(96, 70%, 50%)",
     employeeManagement: 30,
@@ -36,8 +36,8 @@ export const mockBarData = [
   },
   {
     continent: "Australia",
-    "server": 40,
-    "serverColor": "hsl(257, 70%, 50%)",
+    Server: 40,
+    ServerColor: "hsl(307, 70%, 50%)",
     PC: 20,
     PCColor: "hsl(326, 70%, 50%)",
     employeeManagement: 40,
@@ -47,8 +47,8 @@ export const mockBarData = [
   },
   {
     continent: "South America",
-    "server": 50,
-    "serverColor": "hsl(190, 70%, 50%)",
+    Server: 50,
+    ServerColor: "hsl(307, 70%, 50%)",
     PC: 10,
     PCColor: "hsl(325, 70%, 50%)",
     employeeManagement: 50,
@@ -61,22 +61,16 @@ export const mockBarData = [
 export const mockPieData = [
  
   {
-    id: "Scope 1",
-    label: "Scope 1",
-    value: 170,
+    id: "Renewable",
+    label: "Renewable",
+    value: 31,
     color: "hsl(162, 70%, 50%)",
   },
   {
-    id: "Scope 2",
-    label: "Scope 2",
-    value: 322,
+    id: "Non-Renewable",
+    label: "Non-Renewable",
+    value: 69,
     color: "hsl(291, 70%, 50%)",
-  },
-  {
-    id: "Scope 3",
-    label: "Scope 3",
-    value: 584,
-    color: "hsl(344, 70%, 50%)",
   },
 ];
 
