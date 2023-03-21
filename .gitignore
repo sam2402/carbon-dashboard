@@ -9,7 +9,8 @@ node_modules/
 .pnp.js
 
 # testing
-/coverage
+frontend/coverage
+frontend/src/tests/*.txt
 
 # production
 /build
