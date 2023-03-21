@@ -1,17 +1,48 @@
-import { Box, Typography, useTheme} from "@mui/material";
+import { Box, Typography, useTheme, Select, FormControl, MenuItem, InputLabel} from "@mui/material";
 import { tokens } from "../../theme";
 import LineChartPastUsage from "../../components/LineChart/LineChartPastUsage";
 import Header from "../../components/Header";
 import PieChartPastUsage from "../../components/PieChart/PieChartPastUsage";
 import BarChartPastUsage from "../../components/BarChart/BarChartPastUsage";
+import React, { useState, useEffect } from 'react';
 
 const PastUsage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const resourceGroups = ["EmTech_RAE", "UCL_Water_Beats", "UKI_DAI_DataEngineering_Discovery"];
+  const [resourceGroup, setResourceGroup] = useState(["EmTech_RAE"]);
+  const [totalEmissions, setTotalEmissions] = useState()
+
+  useEffect(() => {
+    setTotalEmissions(undefined)
+    fetch("http://127.0.0.1:5000/past-total-emissions/"+resourceGroup)
+    .then(res => {
+      return res.json()
+    })
+    .then(result => {
+      setTotalEmissions(result.value)
+    })
+  }, [resourceGroup])
+
   return (
     <Box m="20px">
-      <Header title="PAST USAGE" subtitle="Time Span of 10 Years in the Past" />
+      <Header title="PAST USAGE" subtitle="Past ~30 Days" />
+
+      <FormControl style = {{paddingBottom: "30px"}} fullWidth>
+        <InputLabel id="demo-simple-select-label">Resource Group</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={resourceGroup}
+          label="Resource Group"
+          onChange= {(event) => setResourceGroup(event.target.value)}
+        >
+          {resourceGroups.map(resourceGroup =>
+            <MenuItem key={resourceGroup} value={resourceGroup}>{resourceGroup}</MenuItem>
+          )}
+        </Select>
+      </FormControl>
       
       {/* GRID & CHARTS */}
       <Box
@@ -45,13 +76,13 @@ const PastUsage = () => {
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                21,357,131 Metric Tonnes
+                {totalEmissions === undefined ? "-" : totalEmissions+"g"}
               </Typography>
             </Box>
             
           </Box>
-          <Box  height="35vh" m="-20px 0 0 0">
-            <LineChartPastUsage />
+          <Box  height="45vh" m="-30px 0 0 0">
+            <LineChartPastUsage resourceGroup={resourceGroup} />
           </Box>
         </Box>
 
@@ -61,7 +92,7 @@ const PastUsage = () => {
 
         <Box
           gridColumn="span 8"
-          gridRow="span 3"
+          gridRow="span 5"
           backgroundColor={colors.primary[400]}
 
         >

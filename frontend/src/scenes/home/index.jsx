@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import GeographyChart from "../../components/GeographyChart/GeographyChartRealTime";
 import { tokens } from "../../theme";
 
-const Welcome = () => {
+const Home = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -30,4 +30,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome;
+export default Home;

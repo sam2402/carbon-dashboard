@@ -1,7 +1,3 @@
-import { useTheme } from "@mui/material";
-import { useContext } from "react";
-import { ColorModeContext } from "../../theme";
-
 import React from "react";
 import {
   Box,
@@ -13,8 +9,6 @@ import {
 } from "./FooterStyles";
 
 const Footer = () => {
-  const theme = useTheme();
-  const colorMode = useContext(ColorModeContext);
 
   return (
       <Box 
