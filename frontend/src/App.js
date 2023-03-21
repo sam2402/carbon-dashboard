@@ -10,7 +10,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import ResourceGroup from "./scenes/resourceGroup";
 import Region from "./scenes/region";
-import Welcome from "./scenes/welcome";
+import Home from "./scenes/home";
 
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
           <main className="content">
           <Topbar setIsSidebar={setIsSidebar} />
             <Routes>
-              <Route path="/welcome" element={<Welcome />} />
+              <Route path="/" element={<Home />} />
               <Route path="/pastUsage" element={<PastUsage />} />
               <Route path="/realTime" element={<RealTime />} />
               <Route path="/futurePred" element={<FuturePred />} />

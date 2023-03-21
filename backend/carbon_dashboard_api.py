@@ -4,6 +4,7 @@ import atexit
 from flask import Flask, request
 from apscheduler.schedulers.background import BackgroundScheduler
 from azure.mgmt.resource.resources.models import GenericResourceExpanded
+from flask_cors import CORS 
 
 from backend.future import predictions
 import backend.carbon.azure_api as azure_api
@@ -16,6 +17,8 @@ from backend.advice.advice_types import AdviceType
 
 
 app = Flask(__name__)
+CORS(app)
+
 azure_client: azure_api.AzureClient = azure_api.AzureClient()
 em_client: em_api.ElectricityMapperClient = em_api.ElectricityMapperClient()
 open_ai_client: open_ai_api.OpenAIClient = open_ai_api.OpenAIClient()
@@ -40,8 +43,6 @@ def get_resource_ids(resourceGroup):
 
 @app.route("/resources/<resourceGroup>")
 def get_resources(resourceGroup):
-    country = request.args.get("country")
-    continent = request.args.get('continent')
     resources = azure_client.get_resources_in_group(resourceGroup)
     return {
         "value": list(map(resource_to_dict, resources))
@@ -78,15 +79,14 @@ def get_past_total_emissions(resourceGroup: str, resourceId: str=None):
         emissions = azure_client.get_emissions_for_resource_group(resourceGroup, earliest_date)
 
     return {
-        "value": sum(emission["value"] for emission in emissions)
+        "value": round(sum(emission["value"] for emission in emissions))
     }
 
 @app.route("/future-resource-emissions/<resourceGroup>")
 @app.route("/future-resource-emissions/<resourceGroup>/<path:resourceId>")
 def get_future_resource_emissions(resourceGroup: str, resourceId: str=None):
-    if resourceId is None:
-        emissions = predictions.get_resource_prediction(resourceGroup) if resourceId is None else \
-                    predictions.get_resource_prediction(resourceGroup, resourceId)
+    emissions = predictions.get_resource_prediction(resourceGroup) if resourceId is None else \
+                predictions.get_resource_prediction(resourceGroup, resourceId)
     
     return {
         "value": [
