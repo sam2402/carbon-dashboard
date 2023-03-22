@@ -22,9 +22,6 @@ describe("Sidebar", () => {
     const pastElement = getByText(/Past Usage/i);
     expect(pastElement).toBeInTheDocument();
 
-    const realTimeElement = getByText(/Real-time Usage/i);
-    expect(realTimeElement).toBeInTheDocument();
-
     const futureElement = getByText(/Future Prediction/i);
     expect(futureElement).toBeInTheDocument();
 

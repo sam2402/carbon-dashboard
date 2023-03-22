@@ -56,11 +56,6 @@ describe("Test Page Switch", () => {
     cy.url().should('eq', 'http://localhost:3000/pastUsage');
   });
 
-  it('click Real Time Usage button and check if it jumps to the correct page', () => {
-    cy.get('div.pro-inner-item[tabindex="0"][role="button"] span.pro-item-content a[href="/realTime"]').click({force: true})
-    cy.url().should('eq', 'http://localhost:3000/realTime');
-  })
-
   it('click Future Prediction button and check if it jumps to the correct page', () => {
     cy.get('div.pro-inner-item[tabindex="0"][role="button"] span.pro-item-content a[href="/futurePred"]').click({force: true})
     cy.url().should('eq', 'http://localhost:3000/futurePred');

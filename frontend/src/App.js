@@ -5,7 +5,6 @@ import Topbar from "./scenes/global/Topbar";
 import Footer from "./scenes/global/Footer";
 import PastUsage from "./scenes/pastUsage";
 import FuturePred from "./scenes/futurePred";
-import RealTime from "./scenes/realTime";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import ResourceGroup from "./scenes/resourceGroup";
@@ -28,7 +27,6 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/pastUsage" element={<PastUsage />} />
-                  <Route path="/realTime" element={<RealTime />} />
                   <Route path="/futurePred" element={<FuturePred />} />
                   <Route path="/resourceGroup" element={<ResourceGroup />} />
                   <Route path="/region" element={<Region />} />
