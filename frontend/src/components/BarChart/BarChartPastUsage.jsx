@@ -1,9 +1,8 @@
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
 import { tokens } from "../../theme";
-import { mockBarData as data } from "../../data/mockDataPast";
 
-const BarChartPastUsage = ({ isDashboard = false }) => {
+const BarChartPastUsage = ({ isDashboard = false, data = [] }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -11,7 +10,6 @@ const BarChartPastUsage = ({ isDashboard = false }) => {
     <ResponsiveBar
       data={data}
       theme={{
-        // added
         axis: {
           domain: {
             line: {
@@ -39,8 +37,8 @@ const BarChartPastUsage = ({ isDashboard = false }) => {
           },
         },
       }}
-      keys={["GAS", "OIL", "ELECTRICITY", "RENEWABLE"]}
-      indexBy="continent"
+      keys={Object.keys(data[0] ?? []).filter(key => key!=="region" && !key.endsWith("Color"))}
+      indexBy="region"
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.3}
       valueScale={{ type: "linear" }}
@@ -76,7 +74,7 @@ const BarChartPastUsage = ({ isDashboard = false }) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "region", // changed
+        legend: isDashboard ? undefined : "Region",
         legendPosition: "middle",
         legendOffset: 40,
       }}
@@ -84,9 +82,9 @@ const BarChartPastUsage = ({ isDashboard = false }) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "sources", // changed
+        legend: isDashboard ? undefined : "Carbon Emissions (g)",
         legendPosition: "middle",
-        legendOffset: -40,
+        legendOffset: -52,
       }}
       enableLabel={true}
       labelSkipWidth={12}

@@ -156,7 +156,7 @@ def _get_power_consumption_breakdown_default():
 
         return {  
             "powerConsumptionBreakdown": power_consumption_breakdown,
-            "fossilFreePercentage": round((total/sum(power_consumption_breakdown[source] for source in ElectricityMapperClient.Fossil_free_sources))*100),
-            "renewablePercentage": round((total/sum(power_consumption_breakdown[source] for source in ElectricityMapperClient.Renewable_sources))*100),
+            "fossilFreePercentage": round((sum(power_consumption_breakdown[source] for source in ElectricityMapperClient.Fossil_free_sources)/total)*100),
+            "renewablePercentage": round((sum(power_consumption_breakdown[source] for source in ElectricityMapperClient.Renewable_sources)/total)*100),
             "powerConsumptionTotal": total
         }
