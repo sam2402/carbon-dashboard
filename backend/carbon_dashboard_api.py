@@ -33,7 +33,7 @@ atexit.register(lambda: scheduler.shutdown())
 @app.route("/")
 def start():
     print("SERVER READY!")
-    return {}
+    return {"value": "SERVER READY!"}
 
 @app.route("/resource-ids/<resourceGroup>")
 def get_resource_ids(resourceGroup):
