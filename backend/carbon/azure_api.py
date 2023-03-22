@@ -110,7 +110,7 @@ class AzureClient:
 
         metrics_data = self._monitor_client.metrics.list(
             resource_id,
-            timespan=f"{earliest_date.date()}/{latest_date.date()}",
+            timespan=f"{earliest_date}/{latest_date}",
             interval=interval,
             metricnames=metric["name"],
             aggregation=metric["aggregation"]

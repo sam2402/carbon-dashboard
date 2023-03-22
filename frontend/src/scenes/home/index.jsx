@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import Header from "../../components/Header";
 import GeographyChart from "../../components/GeographyChart/GeographyChartRealTime";
 import { tokens } from "../../theme";
@@ -9,7 +9,13 @@ const Home = () => {
 
   return (
     <Box m="20px">
-      <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+      <Header title="CARBON DASHBOARD" subtitle="Carbon analysis dashboard for Volvo's sales software" />
+      <Typography variant="h4">
+        <b>Real time carbon emissions</b>
+      </Typography>
+      <Typography variant="h5" mb="30px">
+        <em>Grams of CO2 equivalent over the last 30 seconds </em>
+      </Typography>
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"

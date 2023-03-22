@@ -10,7 +10,7 @@ const PastUsage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const resourceGroups = ["EmTech_RAE", "UCL_Water_Beats", "UKI_DAI_DataEngineering_Discovery"];
+  const resourceGroups = ["EmTech_RAE", "UKI_DAI_DataEngineering_Discovery"];
   const [resourceGroup, setResourceGroup] = useState(["EmTech_RAE"]);
   const [totalEmissions, setTotalEmissions] = useState()
   const [emissionsBreakdown, setEmissionsBreakdown] = useState({
@@ -158,7 +158,7 @@ const PastUsage = () => {
             fontWeight="600"
             sx={{ marginBottom: "15px" }}
           >
-            Emission Breakdown
+            Emission Breakdown %
           </Typography>
           <Box height="35vh" >
             <PieChartPastUsage data={emissionsBreakdown.pieChart} />
