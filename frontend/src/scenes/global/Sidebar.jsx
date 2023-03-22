@@ -6,7 +6,6 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import HistoryIcon from '@mui/icons-material/History';
-import TodayIcon from '@mui/icons-material/Today';
 import UpdateIcon from '@mui/icons-material/Update';
 import StorageIcon from '@mui/icons-material/Storage';
 import SouthAmericaIcon from '@mui/icons-material/SouthAmerica';
@@ -134,13 +133,6 @@ const Sidebar = () => {
               title="Past Usage"
               to="/pastUsage"
               icon={<HistoryIcon/>} 
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Real-time Usage"
-              to="/realTime"
-              icon={<TodayIcon />}
               selected={selected}
               setSelected={setSelected}
             />

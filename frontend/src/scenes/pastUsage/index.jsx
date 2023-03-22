@@ -126,7 +126,6 @@ const PastUsage = () => {
         </Box>
 
       
-
         {/* ROW 2 */}
 
         <Box
