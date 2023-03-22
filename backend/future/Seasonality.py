@@ -4,7 +4,7 @@ import pandas as pd
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 def main():
-    with open("four_months_data.json") as file:
+    with open("data.json") as file:
         data = json.load(file)
         
     df = pd.DataFrame(data)
