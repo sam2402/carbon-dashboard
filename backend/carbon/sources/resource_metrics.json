@@ -1,26 +1,32 @@
 {
     "Microsoft.Sql/servers/databases": {
         "name": "cpu_percent",
-        "aggregation": "Average"
+        "aggregation": "Average",
+        "minInterval": "PT1M"
     },
     "Microsoft.Web/serverFarms": {
         "name": "CpuPercentage",
-        "aggregation": "Average"
+        "aggregation": "Average",
+        "minInterval": "PT1M"
     },
     "Microsoft.Maps/accounts": {
         "name": "Usage",
-        "aggregation": "Count"
+        "aggregation": "Count",
+        "minInterval": "PT1M"
     },
     "Microsoft.Storage/storageAccounts": {
         "name":  "Transactions",
-        "aggregation": "Total"
+        "aggregation": "Total",
+        "minInterval": "PT1M"
     },
     "Microsoft.Web/sites": {
         "name": "CpuTime",
-        "aggregation": "Average"
+        "aggregation": "Average",
+        "minInterval": "PT1M"
     },
     "Microsoft.Web/staticSites": {
         "name": "SiteHits",
-        "aggregation": "Total"
+        "aggregation": "Total",
+        "minInterval": "PT5M"
     }
 }

@@ -14,6 +14,7 @@ from backend.carbon.resource import resource_to_dict
 from backend.carbon.sources.objs import location_zones
 from backend.carbon.emissions import ResourceEmissionInfo
 from backend.advice.advice_types import AdviceType
+from backend.carbon.sources.objs import resource_metrics
 
 
 app = Flask(__name__)
@@ -128,7 +129,6 @@ def get_past_emissions_breakdown(resourceGroup: str):
         total_emissions += total_resource_emissions
         lon, lat = location_zones[resource.location]["longitude"], location_zones[resource.location]["latitude"]
         detailed_power_consumption, _, renewable_percentage = em_client.get_power_consumption_breakdown(lon, lat, time)
-        print(renewable_percentage)
         total_renewable_emissions += total_resource_emissions*(renewable_percentage/100)
 
         if resource.location not in past_emissions_breakdown["emissionsBreakdownDetail"]:
@@ -143,6 +143,31 @@ def get_past_emissions_breakdown(resourceGroup: str):
 
     return {
         "value": past_emissions_breakdown
+    }
+
+@app.route("/current-emissions")
+def get_current_emissions():
+    location_param = request.args.get("location")
+    if location_param is None:
+        raise ValueError("Missing location parameter")
+
+    resources = azure_client.get_resources_at_location(location_param)
+    total_emissions = 0
+    for resource_group, resources in resources.items():
+        for resource in resources:
+            res_ems = azure_client.get_emissions_for_resource(
+                resource_group,
+                resource.id,
+                earliest_date=datetime.datetime.now()-datetime.timedelta(minutes=5),
+                interval=resource_metrics[resource.type]["minInterval"]
+            )
+            total_emissions+= res_ems[-1]["value"] if res_ems else 0
+
+    return {
+        "value": {
+            "location": location_param,
+            "emissions": total_emissions
+        }
     }
 
 @app.route("/future-resource-emissions/<resourceGroup>")

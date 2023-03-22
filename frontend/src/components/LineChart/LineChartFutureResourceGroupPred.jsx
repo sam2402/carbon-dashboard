@@ -117,7 +117,7 @@ const LineChartFutureResourceGroupPred = ({ isCustomLineColors = false, isDashbo
       axisBottom={{
         orient: "bottom",
         tickSize: 0,
-        tickValues: "every day",
+        tickValues: 3,
         tickPadding: 5,
         tickRotation: 0,
         legend: isDashboard ? undefined : "Time", // added
