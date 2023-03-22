@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
-import { tokens } from "../../theme";
+import { ColorModeContext, tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import HistoryIcon from '@mui/icons-material/History';
 import TodayIcon from '@mui/icons-material/Today';
@@ -85,12 +85,24 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="150px"
-                  height="150px"
-                  src={`../../assets/VolvoDark.png`}
-                />
+
+              {theme.palette.mode === "dark" ? (
+                    <img
+                    alt="Volvo Logo"
+                    width="150px"
+                    height="150px"
+                    src={`../../assets/VolvoDark.png`}
+                  />
+                  ) : (
+                    <img
+                    alt="Volvo Logo"
+                    width="150px"
+                    height="150px"
+                    src={`../../assets/VolvoLight.png`}
+                  />
+                  )}
+
+                
               </Box>
               <Box textAlign="center">
                 
@@ -100,6 +112,7 @@ const Sidebar = () => {
               </Box>
             </Box>
           )}
+
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <Item

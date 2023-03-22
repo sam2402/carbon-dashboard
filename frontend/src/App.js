@@ -21,24 +21,22 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
-          <div className="sidebar-footer-wrapper">
+          <div className="app">
             <Sidebar isSidebar={isSidebar} />
-            <Footer setIsSidebar={setIsSidebar} />
-          </div>
-          <main className="content">
-          <Topbar setIsSidebar={setIsSidebar} />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/pastUsage" element={<PastUsage />} />
-              <Route path="/realTime" element={<RealTime />} />
-              <Route path="/futurePred" element={<FuturePred />} />
-              <Route path="/resourceGroup" element={<ResourceGroup />} />
-              <Route path="/region" element={<Region />} />
-            </Routes>
-          </main>
-        </div>
-      </ThemeProvider>
+            <main className="content">
+              <Topbar setIsSidebar={setIsSidebar} />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/pastUsage" element={<PastUsage />} />
+                  <Route path="/realTime" element={<RealTime />} />
+                  <Route path="/futurePred" element={<FuturePred />} />
+                  <Route path="/resourceGroup" element={<ResourceGroup />} />
+                  <Route path="/region" element={<Region />} />
+                </Routes>
+              <Footer setIsSidebar={setIsSidebar} />
+            </main>
+          </div>    
+        </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }
