@@ -4,12 +4,14 @@ import os
 from .sources.objs import resource_metrics, location_zones
 from .emissions import get_carbon_coefficient
 from .resource import ResourceCache
+from .electricity_mapper_api import ElectricityMapperClient
+
 
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.resources.models import GenericResourceExpanded
 from azure.mgmt.monitor import MonitorManagementClient
-from .electricity_mapper_api import ElectricityMapperClient
+from cachetools import cached, TTLCache
 
 METRICS_RETENTION_PERIOD = 50
 
@@ -56,7 +58,6 @@ class AzureClient:
                         resources[resource_group_name].append(resource)
         return resources
                 
-
     def get_emissions_for_resource_group(self,
                                 resource_group: str,
                                 earliest_date: datetime.datetime = None,
@@ -84,6 +85,7 @@ class AzureClient:
             key = lambda data_point: data_point["date"]
         )
 
+    @cached(cache = TTLCache(maxsize = 32, ttl = datetime.timedelta(hours=1), timer=datetime.datetime.now)) 
     def get_emissions_for_resource(self,
                                    resource_group: str,
                                    resource_id: str,

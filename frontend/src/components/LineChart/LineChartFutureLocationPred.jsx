@@ -41,16 +41,14 @@ const LineChartFutureLocationPred = ({ isCustomLineColors = false, isDashboard =
       });
 
       Promise.all(promiseCollection).then((responses) => {
-        let r = responses.map((response, i) => ({
+        setData(responses.map((response, i) => ({
           id: truncate(locations[i], 21),
           color: tokens("dark").greenAccent[500],
           data: response.value.map(dataPoint => ({
             x: formatDate(dataPoint.date),
             y: dataPoint.value,
           }))
-        })).filter(line => line.data.length !== 0)
-        console.log(r)
-        setData(r)
+        })).filter(line => line.data.length !== 0))
       });
     }
 

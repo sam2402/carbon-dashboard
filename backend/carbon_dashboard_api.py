@@ -31,7 +31,7 @@ atexit.register(lambda: scheduler.shutdown())
 
 @app.route("/")
 def start():
-    print("SERER READY!")
+    print("SERVER READY!")
     return {}
 
 @app.route("/resource-ids/<resourceGroup>")
@@ -112,6 +112,39 @@ def get_past_total_emissions(resourceGroup: str, resourceId: str=None):
         "value": round(sum(emission["value"] for emission in emissions))
     }
 
+@app.route("/past-emissions-breakdown/<resourceGroup>")
+def get_past_emissions_breakdown(resourceGroup: str):
+    time = datetime.datetime.now()-datetime.timedelta(days=azure_api.METRICS_RETENTION_PERIOD)
+    past_emissions_breakdown = {
+        "renewablePercentage": None,
+        "emissionsBreakdownDetail": {}
+    }
+    
+    total_emissions = 0
+    total_renewable_emissions = 0
+    for resource in azure_client.get_resources_in_group(resourceGroup):
+        emissions = azure_client.get_emissions_for_resource(resourceGroup, resource.id)
+        total_resource_emissions = sum(emission["value"] for emission in emissions)
+        total_emissions += total_resource_emissions
+        lon, lat = location_zones[resource.location]["longitude"], location_zones[resource.location]["latitude"]
+        detailed_power_consumption, _, renewable_percentage = em_client.get_power_consumption_breakdown(lon, lat, time)
+        print(renewable_percentage)
+        total_renewable_emissions += total_resource_emissions*(renewable_percentage/100)
+
+        if resource.location not in past_emissions_breakdown["emissionsBreakdownDetail"]:
+            past_emissions_breakdown["emissionsBreakdownDetail"][resource.location] = {}
+        
+        for power_type, power_percentage in detailed_power_consumption.items():
+            if power_type not in past_emissions_breakdown["emissionsBreakdownDetail"][resource.location]:
+                past_emissions_breakdown["emissionsBreakdownDetail"][resource.location][power_type] = 0
+            past_emissions_breakdown["emissionsBreakdownDetail"][resource.location][power_type] += round(total_resource_emissions*(power_percentage/100), 1)
+
+    past_emissions_breakdown["renewablePercentage"] = round((total_renewable_emissions/total_emissions)*100, 1)
+
+    return {
+        "value": past_emissions_breakdown
+    }
+
 @app.route("/future-resource-emissions/<resourceGroup>")
 @app.route("/future-resource-emissions/<resourceGroup>/<path:resourceId>")
 def get_future_resource_emissions(resourceGroup: str, resourceId: str=None):
@@ -140,7 +173,6 @@ def get_advice():
     resource_id_param = request.args.get("resourceId")
     azure_location_param = request.args.get("azureLocation")
     advice_type_param = request.args.get("adviceType")
-    print(advice_type_param)
     matching_resources: dict[str, list[GenericResourceExpanded]] = {} # resource group: [resources]
     for resource_group in azure_client.get_resource_groups():
         if resource_group_param is None or resource_group_param == resource_group:
@@ -168,14 +200,12 @@ def get_advice():
     
     advice = {}
     if advice_type_param is None or advice_type_param=="energyType":
-        print("Hello")
         advice["energyType"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.ENERGY_TYPE),
     if advice_type_param is None or advice_type_param=="location":
         advice["location"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.LOCATION),
     if advice_type_param is None or advice_type_param=="resourceConfiguration":
         advice["resourceConfiguration"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.RESOURCE_CONFIGURATION),
     if advice_type_param is None or advice_type_param=="coolingType":
-        print("Hi")
         advice["coolingType"] = open_ai_client.get_advice(resource_emission_infos, AdviceType.COOLING_TYPE),
     
 
@@ -185,5 +215,3 @@ def get_advice():
 
 if __name__ == "__main__":
     app.run()
-
-# http://127.0.0.1:5000/advice?resourceGroup=EmTech_RAE&resourceId=/subscriptions/59d64684-e7c9-4397-8982-6b775a473b74/resourceGroups/EmTech_RAE/providers/Microsoft.Web/staticSites/ava-emtech-rae
