@@ -88,14 +88,14 @@ const Sidebar = () => {
 
               {theme.palette.mode === "dark" ? (
                     <img
-                    alt="profile-user"
+                    alt="Volvo Logo"
                     width="150px"
                     height="150px"
                     src={`../../assets/VolvoDark.png`}
                   />
                   ) : (
                     <img
-                    alt="profile-user"
+                    alt="Volvo Logo"
                     width="150px"
                     height="150px"
                     src={`../../assets/VolvoLight.png`}

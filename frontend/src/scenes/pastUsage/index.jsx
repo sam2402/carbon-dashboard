@@ -29,7 +29,7 @@ const PastUsage = () => {
     <Box m="20px">
       <Header title="PAST USAGE" subtitle="Past ~30 Days" />
 
-      <FormControl style = {{paddingBottom: "30px" }} fullWidth>
+      <FormControl style = {{paddingBottom: "30px"}} fullWidth>
         <InputLabel id="demo-simple-select-label">Resource Group</InputLabel>
         <Select
           labelId="demo-simple-select-label"

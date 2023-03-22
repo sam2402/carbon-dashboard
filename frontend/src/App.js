@@ -22,19 +22,19 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
           <div className="app">
-          <Sidebar isSidebar={isSidebar} />
-          <main className="content">
-          <Topbar setIsSidebar={setIsSidebar} />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/pastUsage" element={<PastUsage />} />
-              <Route path="/realTime" element={<RealTime />} />
-              <Route path="/futurePred" element={<FuturePred />} />
-              <Route path="/resourceGroup" element={<ResourceGroup />} />
-              <Route path="/region" element={<Region />} />
-            </Routes>
-            <Footer setIsSidebar={setIsSidebar} />
-          </main>
+            <Sidebar isSidebar={isSidebar} />
+            <main className="content">
+              <Topbar setIsSidebar={setIsSidebar} />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/pastUsage" element={<PastUsage />} />
+                  <Route path="/realTime" element={<RealTime />} />
+                  <Route path="/futurePred" element={<FuturePred />} />
+                  <Route path="/resourceGroup" element={<ResourceGroup />} />
+                  <Route path="/region" element={<Region />} />
+                </Routes>
+              <Footer setIsSidebar={setIsSidebar} />
+            </main>
           </div>    
         </ThemeProvider>
     </ColorModeContext.Provider>
