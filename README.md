@@ -3,7 +3,8 @@
 1. Clone this repository
 
 2. Follow the instructions here to install the Azure CLI
-[How to install the Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+
+  [How to install the Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 
 3. Once this is installed, open your command line and enter
 
@@ -16,7 +17,7 @@
 4. Go to the directory `carbon-dashboard` you created by cloning this repository. Start the server by running the following commands:
 ```
 cd backend
-./server
+./server.sh
 ```
 
 5. After a few seconds the following will appear in your command line:
