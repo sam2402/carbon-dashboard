@@ -16,10 +16,17 @@ from cachetools import cached, TTLCache
 METRICS_RETENTION_PERIOD = 50
 
 class AzureClient:
+    """
+    A Singleton class that used to interacting with the Azure API can fetch resource data and carbon emissions data.
+    """
+
 
     _instance = None
 
     def __init__(self):
+        """
+        Initializes the AzureClient object with required credentials and clients.
+        """
 
         credential = DefaultAzureCredential()
         subscription_id = os.environ["SUBSCRIPTION_ID"]
@@ -35,20 +42,61 @@ class AzureClient:
     
     # Implement AzureClient as a Singleton
     def __new__(cls):
+        """
+        Guarantees that only one instance of AzureClient is generated, according to the Singleton design principle        
+        
+        Returns:
+            AzureClient: The unique instance of the AzureClient class.
+        """
         if cls._instance is None:
             cls._instance = super(AzureClient, cls).__new__(cls)
         return cls._instance
     
     def get_resource(self, resource_group: str, resource_id: str) -> GenericResourceExpanded:
+        """
+        Retrieves a specific resource from the cache with its specific resource group and resource ID.
+
+        Args:
+            resource_group (str): The name of the specific resource group.
+            resource_id (str): The unique ID of the specific resource.
+        
+        Returns:
+            GenericResourceExpanded: The requested resource information from Azure.
+        """
         return self._resource_cache.get_resource(resource_group, resource_id)
     
     def get_resource_groups(self) -> list[str]:
+        """
+        Retrieves a list of all available resource groups.
+
+        Returns:
+            list[str]: A list of resource group names.
+        """
         return self._resource_cache.get_resource_groups()
 
     def get_resources_in_group(self, resource_group: str) -> list[GenericResourceExpanded]:
+        """
+        Retrieves all resources in a specific resource group.
+
+        Args:
+            resource_group (str): The name of the resource group.
+
+        Returns:
+            list[GenericResourceExpanded]: A list of resources informations within the specific resource group.
+        """
         return self._resource_cache.get_resource_group(resource_group)
 
     def get_resources_at_location(self, location: str, resource_group: str=None) -> dict[str: GenericResourceExpanded]:
+        """
+        Obtains resources from a certain place, with the option of filtering by a resource group.
+
+        Args:
+            location (str): The location to obtains resources from.
+            resource_group (str, optional): The resource group to filter resources by.
+
+        Returns:
+            dict[str, GenericResourceExpanded]: A dictionary of resource groups and their resource informations at the specified location.
+        """
         resources = {}
         for resource_group_name in self.get_resource_groups():
             if resource_group is None or resource_group_name == resource_group:
@@ -64,6 +112,18 @@ class AzureClient:
                                 latest_date: datetime.datetime = None,
                                 interval: str = None,
                                 ) -> list[dict[str, float]]:
+        """
+        Retrieves carbon emissions data for a specific resource group within a specified date range and given time interval.
+
+        Args:
+            resource_group (str): The name of the resource group.
+            earliest_date (datetime.datetime, optional): The start date for specified date range of carbon emissions data.
+            latest_date (datetime.datetime, optional): The end date for specified date range of carbon emissions data.
+            interval (str, optional): The time interval for the emissions data.
+
+        Returns:
+            list[dict[str, float]]: A list of dictionaries in fomat of date and emissions value.
+        """
         if earliest_date is None:
             earliest_date = datetime.datetime.now()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)
         if latest_date is None:
@@ -93,6 +153,19 @@ class AzureClient:
                                    latest_date: datetime.datetime = None,
                                    interval: str = None,
                                    ) -> list[dict[datetime.datetime, float]]:
+        """
+        Retrieves carbon emissions data for a specific resource within a specified date range and interval.
+
+        Args:
+            resource_group (str): The name of the given resource group.
+            resource_id (str): The unique ID of the specific resource.
+            earliest_date (datetime.datetime, optional): The start date for specified date range of carbon emissions data.
+            latest_date (datetime.datetime, optional): The end date for specified date range of carbon emissions data.
+            interval (str, optional): The time interval for the emissions data.
+
+        Returns:
+            list[dict[datetime.datetime, float]]: A list of dictionaries in fomat of date and emissions value.
+        """
         
         if earliest_date is None:
             earliest_date = datetime.datetime.now()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)

@@ -6,6 +6,16 @@ from datetime import datetime, timezone
 from statsmodels.graphics.gofplots import qqplot 
 
 def calculate_step(past_data, future_date: datetime):
+    """
+    Calculates the number of steps between the last date(but actually time) in past_data and the specified future_date.
+
+    Args:
+        past_data (list): A list of dictionaries containing past data with 'date' keys.
+        future_date (datetime): To calculate the forecast data up to this date (but actually time).
+
+    Returns:
+        int: The number of steps between the last date (but actually time) in past_data and future_date (but actually time).
+    """
     # Convert the 'date' column to datetime format
     past_data_dates = [data['date'].replace(tzinfo=timezone.utc) for data in past_data]
     # past_data_dates = [data['date'] for da ta in past_data]
@@ -19,6 +29,16 @@ def calculate_step(past_data, future_date: datetime):
     return step
     
 def get_future_emissions(past_emissions, future_date: datetime):
+    """
+    Predicts future emissions using the past_emissions data and a specified future_date using the SARIMA model.
+
+    Args:
+        past_emissions (list): A list of dictionaries containing past emissions data with 'date' and 'value' keys.
+        future_date (datetime): To calculate the forecast data up to this date (but actually time).
+
+    Returns:
+        list: A list of dictionaries containing the predicted emissions with 'date' and 'value' keys.
+    """
     # Convert the data to a DataFrame
     df = pd.DataFrame(past_emissions)
 

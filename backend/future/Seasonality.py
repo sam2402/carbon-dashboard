@@ -4,6 +4,13 @@ import pandas as pd
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 def main():
+    """
+    
+    Read a JSON file named "data.json" and load its data into a Pandas DataFrame. The data is then resampled to a
+    Hourly frequency and seasonal breakdown are performed, and check for seasonality. If the mean absolute value of the seasonal component
+    greater than 1, the seasonal data is stored in a file named " seasonal_data.json ".
+    
+    """
     with open("data.json") as file:
         data = json.load(file)
         

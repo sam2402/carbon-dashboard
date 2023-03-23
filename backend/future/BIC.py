@@ -5,6 +5,16 @@ from statsmodels.tsa.arima.model import ARIMA
 import numpy as np
 
 def get_p_and_q_value (past_emissions, d):
+    """
+    Determine the optimal (p, q) values by iterate over all possible (p, q) within an ARIMA model.
+
+    Args: 
+        past_emissions(d): A list or array of past emissions data.
+        d(int): The order of integration (d) used for the ARIMA model.
+    
+    Return: 
+        int, int: The optimal (p, q) values.
+    """
     # Convert the data to a DataFrame
     data = pd.DataFrame(past_emissions)
 
