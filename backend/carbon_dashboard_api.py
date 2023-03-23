@@ -16,7 +16,6 @@ from backend.carbon.emissions import ResourceEmissionInfo
 from backend.advice.advice_types import AdviceType
 from backend.carbon.sources.objs import resource_metrics
 
-
 app = Flask(__name__)
 CORS(app)
 
@@ -32,11 +31,26 @@ atexit.register(lambda: scheduler.shutdown())
 
 @app.route("/")
 def start():
+    """
+    Showing that the server is ready.
+
+    Returns:
+        dict: An empty dictionary.
+    """
     print("SERVER READY!")
     return {"value": "SERVER READY!"}
 
 @app.route("/resource-ids/<resourceGroup>")
 def get_resource_ids(resourceGroup):
+    """
+    Retrieves the resource IDs for the given resource group.
+
+    Args:
+        resourceGroup (str): The name of the resource group.
+
+    Returns:
+        dict: A dictionary that contains a list of resource IDs.
+    """
     resources = azure_client.get_resources_in_group(resourceGroup)
     return {
         "value": [resource.id for resource in resources]
@@ -45,6 +59,16 @@ def get_resource_ids(resourceGroup):
 @app.route("/resources")
 @app.route("/resources/<resourceGroup>")
 def get_resources(resourceGroup: str=None):
+    """
+    Retrieves resources for a given resource group or all resource groups if not specified.
+    Optionally filters resources by location.
+
+    Args:
+        resourceGroup (str, optional): The name of the resource group. Defaults to None.
+
+    Returns:
+        dict: A dictionary containing a list of resources as dictionaries.
+    """
     location_param = request.args.get("location")
     if resourceGroup is not None:
         resources: list[GenericResourceExpanded] = azure_client.get_resources_in_group(resourceGroup)
@@ -64,6 +88,15 @@ def get_resources(resourceGroup: str=None):
 @app.route("/locations")
 @app.route("/locations/<resourceGroup>")
 def get_locations(resourceGroup: str=None):
+    """
+    Retrieves the locations of resources in the specified resource group or all resource groups if None of the resource group is specified.
+
+    Args:
+        resourceGroup (str, optional): The name of the resource group. Defaults to None.
+
+    Returns:
+        dict: A dictionary that contatins a list of resource locations.
+    """
     if resourceGroup is not None:
         resources: list[GenericResourceExpanded] = azure_client.get_resources_in_group(resourceGroup)
     else:
@@ -82,6 +115,17 @@ def get_locations(resourceGroup: str=None):
 @app.route("/past-resource-emissions/<resourceGroup>")
 @app.route("/past-resource-emissions/<resourceGroup>/<path:resourceId>")
 def get_past_resource_emissions(resourceGroup: str, resourceId: str=None):
+    """
+    Retrieves the past carbon emissions data for a specific resource or for the entire resource group if None of the resource is specified.
+
+
+    Args:
+        resourceGroup (str): The name of the resource group.
+        resourceId (str, optional): The ID of the specific resource. Defaults to None.
+
+    Returns:
+        dict: A dictionary containing a list of past carbon emissions data.
+    """
     date_param = request.args.get("earliestDate")
     earliest_date = datetime.datetime.strptime(date_param, "%Y-%m-%d %H:%M:%S").date() if date_param else None
     interval = request.args.get("interval")
@@ -102,6 +146,16 @@ def get_past_resource_emissions(resourceGroup: str, resourceId: str=None):
 @app.route("/past-total-emissions/<resourceGroup>")
 @app.route("/past-total-emissions/<resourceGroup>/<path:resourceId>")
 def get_past_total_emissions(resourceGroup: str, resourceId: str=None):
+    """
+    Retrieves the past total carbon emissions data for a specific resource or for the entire resource group if None of the resource is specified.
+
+    Args:
+        resourceGroup (str): The name of the resource group.
+        resourceId (str, optional): The ID of the specific resource. Defaults to None.
+
+    Returns:
+        dict: A dictionary containing the total past carbon emissions.
+    """
     date_param = request.args.get("earliestDate")
     earliest_date = datetime.datetime.strptime(date_param, "%Y-%m-%d %H:%M:%S").date() if date_param else None
     if resourceId is not None:
@@ -115,6 +169,15 @@ def get_past_total_emissions(resourceGroup: str, resourceId: str=None):
 
 @app.route("/past-emissions-breakdown/<resourceGroup>")
 def get_past_emissions_breakdown(resourceGroup: str):
+    """
+    Retrieves the past emissions breakdown informations and location for a specific resource group.
+
+    Args:
+        resourceGroup (str): The name of the resource group.
+
+    Returns:
+        dict: A dictionary containing the past emissions breakdown information.
+    """
     time = datetime.datetime.now()-datetime.timedelta(days=azure_api.METRICS_RETENTION_PERIOD)
     past_emissions_breakdown = {
         "renewablePercentage": None,
@@ -147,6 +210,12 @@ def get_past_emissions_breakdown(resourceGroup: str):
 
 @app.route("/current-emissions")
 def get_current_emissions():
+    """
+    Retrieves the current carbon emissions data for a specific location.
+
+    Returns:
+        dict: A dictionary containing the current carbon emissions data.
+    """
     location_param = request.args.get("location")
     if location_param is None:
         raise ValueError("Missing location parameter")
@@ -173,6 +242,16 @@ def get_current_emissions():
 @app.route("/future-resource-emissions/<resourceGroup>")
 @app.route("/future-resource-emissions/<resourceGroup>/<path:resourceId>")
 def get_future_resource_emissions(resourceGroup: str, resourceId: str=None):
+    """
+    Retrieves the future carbon emissions data for a specific resource or for the entire resource group if None of the resource is specified.
+
+    Args:
+        resourceGroup (str): The name of the resource group.
+        resourceId (str, optional): The ID of the specific resource. Defaults to None.
+
+    Returns:
+        dict: A dictionary containing a list of future carbon emissions data.
+    """
     location_param = request.args.get("location")
     if resourceId is None and location_param is not None:
         emissions = predictions.get_location_prediction(location_param, resourceGroup)
@@ -194,6 +273,12 @@ def get_future_resource_emissions(resourceGroup: str, resourceId: str=None):
 
 @app.route("/advice")
 def get_advice():
+    """
+        Retrieves advice for reducing emissions based on the given adviceType.
+
+        Returns:
+            dict: A dictionary containing advice on various aspects such as energy type, location, resource configuration and cooling type.
+    """
     resource_group_param = request.args.get("resourceGroup")
     resource_id_param = request.args.get("resourceId")
     azure_location_param = request.args.get("azureLocation")
@@ -239,4 +324,7 @@ def get_advice():
     }
 
 if __name__ == "__main__":
+    """
+    Starts the application and serves it on the default port.
+    """
     app.run()

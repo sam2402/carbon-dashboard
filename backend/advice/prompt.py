@@ -3,6 +3,16 @@ from backend.carbon.emissions import ResourceEmissionInfo
 from backend.carbon.sources.objs import cpus, location_zones
     
 def get_prompt(resource_emission_infos: list[ResourceEmissionInfo], advice_type: AdviceType) -> str:
+    """
+    Creates a prompt with server details and makes request for corresponding carbon emission reduce carbon emission advices based on the chosen advise type.    
+    
+    Args:
+        resource_emission_infos(list[ResourceEmissionInfo]): A list of ResourceEmissionInfo objects containing server information.
+        advice_type (AdviceType): An of the AdviceType enum which indicates the type of advice to generate.
+    
+    Returns:
+        str: A formatted prompt containing server information and an specific type advice request.
+    """
     
     intro = f"Here is some information about a few Volvo servers. Please provide specific suggestions on how to reduce carbon emissions for the following servers:\n\n"   
     server_info_prompts = []
