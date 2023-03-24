@@ -17,7 +17,8 @@ def update_cache():
     """
     now = datetime.datetime.now()
     for resource_group in _az_client.get_resource_groups():
-        predictions_cache[resource_group] = {}
+        if resource_group not in predictions_cache:
+            predictions_cache[resource_group] = {}
         for resource in _az_client.get_resources_in_group(resource_group):
             predictions_cache[resource_group][resource.id] = _get_prediction(resource_group, resource.id, now)
     print("Cache updated!")

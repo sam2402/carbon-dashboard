@@ -32,7 +32,8 @@ atexit.register(lambda: scheduler.shutdown())
 @app.route("/")
 def start():
     """
-    Showing that the server is ready.
+    Should be called once server has started. It causes predictions.update_cache to be called
+    Shows that the server is ready.
 
     Returns:
         dict: An empty dictionary.
@@ -95,7 +96,7 @@ def get_locations(resourceGroup: str=None):
         resourceGroup (str, optional): The name of the resource group. Defaults to None.
 
     Returns:
-        dict: A dictionary that contatins a list of resource locations.
+        dict: A dictionary that contains a list of resource locations.
     """
     if resourceGroup is not None:
         resources: list[GenericResourceExpanded] = azure_client.get_resources_in_group(resourceGroup)
@@ -170,7 +171,7 @@ def get_past_total_emissions(resourceGroup: str, resourceId: str=None):
 @app.route("/past-emissions-breakdown/<resourceGroup>")
 def get_past_emissions_breakdown(resourceGroup: str):
     """
-    Retrieves the past emissions breakdown informations and location for a specific resource group.
+    Retrieves the past emissions breakdown information and location for a specific resource group.
 
     Args:
         resourceGroup (str): The name of the resource group.

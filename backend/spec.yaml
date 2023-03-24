@@ -1,0 +1,236 @@
+openapi: 3.0.0
+info:
+  title: Carbon Dashboard API
+  description: An API for retrieving data on Azure resources and their carbon emissions.
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Check server status.
+      description: |
+        Should be called once server has started. It causes predictions.update_cache to be called.
+        Shows that the server is ready.
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    example: SERVER READY!
+    /resource-ids/{resourceGroup}:
+      get:
+        summary: Get resource IDs.
+        description: Retrieves the resource IDs for the given resource group.
+        parameters:
+          - in: path
+            name: resourceGroup
+            required: true
+            description: The name of the resource group.
+            schema:
+              type: string
+        responses:
+          "200":
+            description: Success.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    value:
+                      type: array
+                      items:
+                        type: string
+                        example: subscriptions/59d64684-e7c9-4397-8982-6b775a473b74/resourceGroups/EmTech_RAE/providers/Microsoft.Web/staticSites/ava-emtech-rae/staticsite
+    /resources:
+      get:
+        summary: Get resources.
+        description: |
+          Retrieves resources for all resource groups, or for the given resource group.
+          Optionally filters resources by location.
+        parameters:
+          - in: query
+            name: location
+            required: false
+            description: Filter resources by location.
+            schema:
+              type: string
+          - in: path
+            name: resourceGroup
+            required: false
+            description: The name of the resource group.
+            schema:
+              type: string
+        responses:
+          "200":
+            description: Success.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    value:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Resource"
+    /locations:
+      get:
+        summary: Get resource locations.
+        description: |
+          Retrieves the locations of resources in all resource groups, or in the given resource group.
+        parameters:
+          - in: path
+            name: resourceGroup
+            required: false
+            description: The name of the resource group.
+            schema:
+              type: string
+        responses:
+          "200":
+            description: Success.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    value:
+                      type: array
+                      items:
+                        type: string
+                        example: eastus
+    /past-resource-emissions/{resourceGroup}:
+      get:
+        summary: Retrieves past carbon emissions data for a specific resource group or a specific resource.
+        parameters:
+          - name: resourceGroup
+            in: path
+            required: true
+            type: string
+            description: The name of the resource group.
+          - name: resourceId
+            in: path
+            required: false
+            type: string
+            description: The ID of the specific resource.
+        responses:
+          '200':
+            description: A list of past carbon emissions data.
+            schema:
+              type: object
+              properties:
+                value:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        format: date-time
+                        description: The date of the carbon emission data.
+                      value:
+                        type: number
+                        description: The carbon emission value.
+    /past-total-emissions/{resourceGroup}:
+      get:
+        summary: Retrieves the past total carbon emissions for a specific resource group or a specific resource.
+        parameters:
+          - name: resourceGroup
+            in: path
+            required: true
+            type: string
+            description: The name of the resource group.
+          - name: resourceId
+            in: path
+            required: false
+            type: string
+            description: The ID of the specific resource.
+        responses:
+          '200':
+            description: The total past carbon emissions.
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+                  description: The total carbon emission value.
+    /past-emissions-breakdown/{resourceGroup}:
+      get:
+        summary: Retrieves the past emissions breakdown information and location for a specific resource group.
+        parameters:
+          - name: resourceGroup
+            in: path
+            required: true
+            type: string
+            description: The name of the resource group.
+        responses:
+          '200':
+            description: The past emissions breakdown information.
+            schema:
+              type: object
+              properties:
+                value:
+                  type: object
+                  properties:
+                    renewablePercentage:
+                      type: number
+                      description: The percentage of renewable energy sources used.
+                    emissionsBreakdownDetail:
+                      type: object
+                      description: The past emissions breakdown detail.
+    /current-emissions:
+      get:
+        summary: Retrieves the current carbon emissions data for a specific location.
+        parameters:
+          - name: location
+            in: query
+            required: true
+            type: string
+            description: The location of the resource.
+        responses:
+          '200':
+            description: The current carbon emissions data.
+            schema:
+              type: object
+              properties:
+                value:
+                  type: object
+                  properties:
+                    location:
+                      type: string
+                      description: The location of the resource.
+                    emissions:
+                      type: number
+                      description: The carbon emission value.
+    /future-resource-emissions/{resourceGroup}:
+      get:
+        summary: Retrieves future carbon emissions data for a specific resource group or a specific resource.
+        parameters:
+          - name: resourceGroup
+            in: path
+            required: true
+            type: string
+            description: The name of the resource group.
+          - name: resourceId
+            in: path
+    /advice:
+      get:
+        summary: Retrieves advice for reducing emissions based on the given adviceType.
+        parameters:
+          - name: adviceType
+            in: query
+            description: The type of advice to retrieve (e.g. energy type, location, resource configuration, cooling type).
+            type: string
+            required: true
+        responses:
+          '200':
+            description: OK
+            schema:
+              type: object
+              properties:
+                value:
+                  type: energyType
+                  example: advice
+

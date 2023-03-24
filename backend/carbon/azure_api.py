@@ -82,7 +82,7 @@ class AzureClient:
             resource_group (str): The name of the resource group.
 
         Returns:
-            list[GenericResourceExpanded]: A list of resources informations within the specific resource group.
+            list[GenericResourceExpanded]: A list of resources information within the specific resource group.
         """
         return self._resource_cache.get_resource_group(resource_group)
 
@@ -95,7 +95,7 @@ class AzureClient:
             resource_group (str, optional): The resource group to filter resources by.
 
         Returns:
-            dict[str, GenericResourceExpanded]: A dictionary of resource groups and their resource informations at the specified location.
+            dict[str, GenericResourceExpanded]: A dictionary of resource groups and their resource information at the specified location.
         """
         resources = {}
         for resource_group_name in self.get_resource_groups():
@@ -122,7 +122,7 @@ class AzureClient:
             interval (str, optional): The time interval for the emissions data.
 
         Returns:
-            list[dict[str, float]]: A list of dictionaries in fomat of date and emissions value.
+            list[dict[str, float]]: A list of dictionaries in format of date and emissions value.
         """
         if earliest_date is None:
             earliest_date = datetime.datetime.now()-datetime.timedelta(days=METRICS_RETENTION_PERIOD)
@@ -164,7 +164,7 @@ class AzureClient:
             interval (str, optional): The time interval for the emissions data.
 
         Returns:
-            list[dict[datetime.datetime, float]]: A list of dictionaries in fomat of date and emissions value.
+            list[dict[datetime.datetime, float]]: A list of dictionaries in format of date and emissions value.
         """
         
         if earliest_date is None:
@@ -197,7 +197,7 @@ class AzureClient:
             earliest_date-datetime.timedelta(days=1),
             max(latest_date+datetime.timedelta(days=1), datetime.datetime.now())
         )
-        
+        print(emissions_over_time, sep="\n") 
         data_points = []
         for item in metrics_data.value:
             for ts_element in item.timeseries:
