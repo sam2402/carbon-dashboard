@@ -197,7 +197,6 @@ class AzureClient:
             earliest_date-datetime.timedelta(days=1),
             max(latest_date+datetime.timedelta(days=1), datetime.datetime.now())
         )
-        print(emissions_over_time, sep="\n") 
         data_points = []
         for item in metrics_data.value:
             for ts_element in item.timeseries:
