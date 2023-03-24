@@ -1,11 +1,10 @@
-import { Assessment } from '@mui/icons-material';
 import'@testing-library/cypress/add-commands';
 
 describe("Test Functional Buttons", () => {
   
   beforeEach(() => {
     cy.viewport(1920, 1080)
-    cy.visit("http://localhost:3000/welcome");
+    cy.visit("http://localhost:3000/");
   });
 
   it("click  Theme Button and check if theme is switched properly", () => {
@@ -47,7 +46,7 @@ describe("Test Page Switch", () => {
 
   beforeEach(() => {
     cy.viewport(1920, 1080)
-    cy.visit("http://localhost:3000/welcome");
+    cy.visit("http://localhost:3000/");
   });
 
 
@@ -79,7 +78,7 @@ describe("Test Hidden Information", () => {
 
   beforeEach(() => {
     cy.viewport(1920, 1080)
-    cy.visit("http://localhost:3000/welcome");
+    cy.visit("http://localhost:3000/");
   });
 
   it('check if detail descriptions are hidden after clicking hide buttons in resource Group page', () => {

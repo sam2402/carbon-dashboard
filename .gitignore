@@ -10,7 +10,7 @@ node_modules/
 
 # testing
 frontend/coverage
-frontend/src/tests/*.txt
+frontend/src/tests
 
 # production
 /build
