@@ -1,6 +1,6 @@
 # Carbon Dashboard
 ### Deployment Manuel
-1. Clone this repository
+1. Clone this repository (`main` branch)
 
 2. Follow the instructions here to install the Azure CLI
 
